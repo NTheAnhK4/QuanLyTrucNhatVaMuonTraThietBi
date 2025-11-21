@@ -55,7 +55,17 @@
             android:gravity="top"
             android:hint="Mô tả thiết bị"
             android:inputType="text"
-            android:padding="12dp" />
+            android:padding="12dp"
+            android:layout_marginTop="8dp" />
+
+        <!-- Spinner cho tình trạng thiết bị -->
+        <Spinner
+            android:id="@+id/spinnerDeviceStatus"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:padding="8dp"
+            android:spinnerMode="dropdown" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -100,10 +110,6 @@
         android:layout_marginTop="12dp"
         android:layout_marginBottom="12dp"
         />
-
-
-
-
 
     <!-- THANH MENU DƯỚI -->
     <LinearLayout
@@ -170,6 +176,5 @@
         </LinearLayout>
 
     </LinearLayout>
-
 
 </RelativeLayout>

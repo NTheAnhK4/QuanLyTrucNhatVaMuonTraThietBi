@@ -66,6 +66,13 @@ public class DeviceRecyclerAdapter extends RecyclerView.Adapter<DeviceRecyclerAd
         holder.itemName.setText(device.getName());
         holder.itemDescription.setText(device.getDescription());
 
+        // Hiển thị tình trạng
+        if (device.getStatus() != null) {
+            holder.itemStatus.setText("Tình trạng: " + device.getStatus().name());
+        } else {
+            holder.itemStatus.setText("Tình trạng: Không xác định");
+        }
+
         // Load ảnh từ path tuyệt đối
         String path = device.getImageUri();
         if (path != null && !path.isEmpty()) {
@@ -106,13 +113,14 @@ public class DeviceRecyclerAdapter extends RecyclerView.Adapter<DeviceRecyclerAd
 
     public static class DeviceViewHolder extends RecyclerView.ViewHolder {
         ImageView itemImage;
-        TextView itemName, itemDescription;
+        TextView itemName, itemStatus, itemDescription;
         Button btnEdit, btnDelete;
 
         public DeviceViewHolder(@NonNull View itemView) {
             super(itemView);
             itemImage = itemView.findViewById(R.id.itemImage);
             itemName = itemView.findViewById(R.id.itemName);
+            itemStatus = itemView.findViewById(R.id.itemStatus); // Mới thêm
             itemDescription = itemView.findViewById(R.id.itemDescription);
             btnEdit = itemView.findViewById(R.id.btnEdit);
             btnDelete = itemView.findViewById(R.id.btnDelete);

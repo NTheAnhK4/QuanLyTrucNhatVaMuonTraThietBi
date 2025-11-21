@@ -2,9 +2,11 @@ package com.example.quanlytrucnhatvamuontrathietbi;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -27,9 +29,10 @@ import Data.EquipmentStatus;
 
 public class DeviceManagerActivity extends AppCompatActivity {
 
-    private Button btnPickImage, btnAddDevice, btnEditDevice;
+    private Button btnPickImage, btnAddDevice;
     private ImageView imgPreview;
     private EditText inputDeviceName, inputDeviceDescription;
+    private Spinner spinnerDeviceStatus;
 
     private RecyclerView deviceRecycler;
     private DeviceRecyclerAdapter adapter;
@@ -50,6 +53,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
 
         getWidget();
         setupImagePicker();
+        setupSpinner();
 
         // Lấy danh sách thiết bị từ DataUtil
         deviceList = DataUtil.getInstance(this).equipments.getAll();
@@ -65,8 +69,19 @@ public class DeviceManagerActivity extends AppCompatActivity {
 
         inputDeviceName = findViewById(R.id.inputDeviceName);
         inputDeviceDescription = findViewById(R.id.inputDeviceDescription);
+        spinnerDeviceStatus = findViewById(R.id.spinnerDeviceStatus);
 
         deviceRecycler = findViewById(R.id.deviceRecycler);
+    }
+
+    private void setupSpinner() {
+        ArrayAdapter<EquipmentStatus> statusAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                EquipmentStatus.values()
+        );
+        statusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerDeviceStatus.setAdapter(statusAdapter);
     }
 
     private void setupImagePicker() {
@@ -84,32 +99,32 @@ public class DeviceManagerActivity extends AppCompatActivity {
     private void setupRecyclerView() {
         adapter = new DeviceRecyclerAdapter(this, deviceList);
 
-        // Listener click item -> hiển thị lên form
+        // Click vào item -> hiển thị lên form
         adapter.setItemClickListener(e -> {
             inputDeviceName.setText(e.getName());
             inputDeviceDescription.setText(e.getDescription());
             imgPreview.setImageURI(Uri.fromFile(new File(e.getImageUri())));
+            spinnerDeviceStatus.setSelection(e.getStatus().ordinal());
 
             editingDevice = e;
             lastPickedPath = e.getImageUri();
             lastPickedUri = Uri.fromFile(new File(e.getImageUri()));
         });
 
-        // Listener cho nút Edit/Delete
+        // Listener nút Edit/Delete
         adapter.setListener(new DeviceRecyclerAdapter.ItemActionListener() {
             @Override
             public void onEdit(Equipment e) {
-                // Khi bấm Edit, sử dụng luôn form hiện tại
                 if (editingDevice == null || !editingDevice.equals(e)) {
-                    // Nếu chưa chọn item hoặc chọn khác, hiển thị lên form
                     inputDeviceName.setText(e.getName());
                     inputDeviceDescription.setText(e.getDescription());
                     imgPreview.setImageURI(Uri.fromFile(new File(e.getImageUri())));
+                    spinnerDeviceStatus.setSelection(e.getStatus().ordinal());
+
                     editingDevice = e;
                     lastPickedPath = e.getImageUri();
                     lastPickedUri = Uri.fromFile(new File(e.getImageUri()));
                 } else {
-                    // Lấy dữ liệu từ form để cập nhật
                     updateDevice();
                 }
             }
@@ -122,7 +137,6 @@ public class DeviceManagerActivity extends AppCompatActivity {
                     DataUtil.getInstance(DeviceManagerActivity.this).equipments.remove(e);
                     adapter.notifyItemRemoved(index);
 
-                    // Reset form nếu đang chỉnh sửa thiết bị này
                     if (editingDevice != null && editingDevice.equals(e)) {
                         resetForm();
                     }
@@ -139,10 +153,8 @@ public class DeviceManagerActivity extends AppCompatActivity {
 
         btnAddDevice.setOnClickListener(v -> {
             if (editingDevice != null) {
-                // Nếu đang chỉnh sửa -> cập nhật
                 updateDevice();
             } else {
-                // Thêm mới
                 addNewDevice();
             }
         });
@@ -151,6 +163,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
     private void updateDevice() {
         String name = inputDeviceName.getText().toString().trim();
         String desc = inputDeviceDescription.getText().toString().trim();
+        EquipmentStatus selectedStatus = (EquipmentStatus) spinnerDeviceStatus.getSelectedItem();
 
         if (name.isEmpty()) {
             inputDeviceName.setError("Tên thiết bị không được để trống");
@@ -165,22 +178,19 @@ public class DeviceManagerActivity extends AppCompatActivity {
 
         if (desc.isEmpty()) desc = "";
 
-        // Lưu ảnh mới nếu có thay đổi
         lastPickedPath = savePickedImage(lastPickedUri);
         if (lastPickedPath == null) {
             Toast.makeText(this, "Lưu ảnh thất bại", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Cập nhật thông tin thiết bị
         editingDevice.setName(name);
         editingDevice.setDescription(desc);
         editingDevice.setImageUri(lastPickedPath);
+        editingDevice.setStatus(selectedStatus);
 
-        // Cập nhật DataUtil
         DataUtil.getInstance(this).equipments.update(editingDevice);
 
-        // Cập nhật RecyclerView
         int index = deviceList.indexOf(editingDevice);
         adapter.notifyItemChanged(index);
 
@@ -192,6 +202,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
     private void addNewDevice() {
         String name = inputDeviceName.getText().toString().trim();
         String desc = inputDeviceDescription.getText().toString().trim();
+        EquipmentStatus selectedStatus = (EquipmentStatus) spinnerDeviceStatus.getSelectedItem();
 
         if (name.isEmpty()) {
             inputDeviceName.setError("Tên thiết bị không được để trống");
@@ -213,7 +224,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
         }
 
         String id = UUID.randomUUID().toString();
-        Equipment newDevice = new Equipment(id, name, desc, lastPickedPath, EquipmentStatus.Available);
+        Equipment newDevice = new Equipment(id, name, desc, lastPickedPath, selectedStatus);
 
         DataUtil.getInstance(this).equipments.add(newDevice);
         adapter.notifyItemInserted(deviceList.size() - 1);
@@ -226,13 +237,13 @@ public class DeviceManagerActivity extends AppCompatActivity {
     private void resetForm() {
         inputDeviceName.setText("");
         inputDeviceDescription.setText("");
+        spinnerDeviceStatus.setSelection(0); // Reset về Available
         imgPreview.setImageResource(0);
         lastPickedUri = null;
         lastPickedPath = null;
         editingDevice = null;
     }
 
-    // Lưu ảnh vào internal storage và trả về path tuyệt đối
     private String savePickedImage(Uri uri) {
         try {
             File dir = new File(getFilesDir(), "images");

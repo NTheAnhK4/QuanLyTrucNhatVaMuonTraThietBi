@@ -7,18 +7,24 @@ public class Equipment implements Serializable, Identifiable {
 
     private String id;
     private String name;
+    private String description;
     private EquipmentStatus status;
+    private String imageUri;
 
-    public Equipment(String id, String name, EquipmentStatus status) {
+    public Equipment(String id, String name, String description, String imageUri, EquipmentStatus status) {
 
         this.id = id;
         this.name = name;
         this.status = status;
+        this.description = description;
+        this.imageUri = imageUri;
     }
 
-    public Equipment(String name, EquipmentStatus status) {
+    public Equipment(String name,String description,String imageUri, EquipmentStatus status) {
         this.name = name;
         this.status = status;
+        this.description = description;
+        this.imageUri = imageUri;
     }
 
     public String getId() {
@@ -43,6 +49,22 @@ public class Equipment implements Serializable, Identifiable {
 
     public void setStatus(EquipmentStatus status) {
         this.status = status;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getImageUri() {
+        return imageUri;
+    }
+
+    public void setImageUri(String imageUri) {
+        this.imageUri = imageUri;
     }
 
     @Override

@@ -5,19 +5,19 @@
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="TAExampleDataUlti (1)">
+      <SelectionState runConfigName="DeviceManagerActivity (2)">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="TAExampleDataUlti (2)">
+      <SelectionState runConfigName="DeviceManagerActivity (3)">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="TAExampleDataUlti (3)">
+      <SelectionState runConfigName="DeviceManagerActivity (4)">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="TAExampleDataUlti (4)">
+      <SelectionState runConfigName="DeviceManagerActivity (5)">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="TAExampleDataUlti (5)">
+      <SelectionState runConfigName="DeviceManagerActivity">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

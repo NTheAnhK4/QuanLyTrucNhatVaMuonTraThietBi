@@ -1,5 +1,6 @@
 package com.example.quanlytrucnhatvamuontrathietbi;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
@@ -29,6 +30,7 @@ import Data.EquipmentStatus;
 
 public class DeviceManagerActivity extends AppCompatActivity {
 
+    private ImageView btnBack;
     private Button btnPickImage, btnAddDevice;
     private ImageView imgPreview;
     private EditText inputDeviceName, inputDeviceDescription;
@@ -52,6 +54,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_device_manager);
 
         getWidget();
+        setupBackButton();
         setupImagePicker();
         setupSpinner();
 
@@ -63,6 +66,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
     }
 
     private void getWidget() {
+        btnBack = findViewById(R.id.btnBack);
         btnPickImage = findViewById(R.id.btnPickImage);
         imgPreview = findViewById(R.id.imgPreview);
         btnAddDevice = findViewById(R.id.btnAddDevice);
@@ -72,6 +76,14 @@ public class DeviceManagerActivity extends AppCompatActivity {
         spinnerDeviceStatus = findViewById(R.id.spinnerDeviceStatus);
 
         deviceRecycler = findViewById(R.id.deviceRecycler);
+    }
+
+    private void setupBackButton() {
+        btnBack.setOnClickListener(v -> {
+            Intent intent = new Intent(DeviceManagerActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish(); // đóng DeviceManagerActivity
+        });
     }
 
     private void setupSpinner() {

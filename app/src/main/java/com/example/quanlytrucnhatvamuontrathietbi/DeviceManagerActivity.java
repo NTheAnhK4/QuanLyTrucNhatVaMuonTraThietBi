@@ -164,11 +164,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
         btnPickImage.setOnClickListener(v -> pickImageLauncher.launch("image/*"));
 
         btnAddDevice.setOnClickListener(v -> {
-            if (editingDevice != null) {
-                updateDevice();
-            } else {
-                addNewDevice();
-            }
+            addNewDevice();
         });
     }
 

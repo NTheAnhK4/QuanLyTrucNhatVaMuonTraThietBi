@@ -231,8 +231,8 @@ public class DeviceManagerActivity extends AppCompatActivity {
             return;
         }
 
-        String id = UUID.randomUUID().toString();
-        Equipment newDevice = new Equipment(id, name, desc, lastPickedPath, selectedStatus);
+
+        Equipment newDevice = new Equipment( name, desc, lastPickedPath, selectedStatus);
 
         DataUtil.getInstance(this).equipments.add(newDevice);
         adapter.notifyItemInserted(deviceList.size() - 1);

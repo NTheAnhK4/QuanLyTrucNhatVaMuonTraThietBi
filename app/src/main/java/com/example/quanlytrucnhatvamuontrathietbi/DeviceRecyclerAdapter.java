@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
@@ -20,8 +22,9 @@ import Data.Equipment;
 
 public class DeviceRecyclerAdapter extends RecyclerView.Adapter<DeviceRecyclerAdapter.DeviceViewHolder> {
 
-    private ArrayList<Equipment> list;
-    private Context context;
+    private final ArrayList<Equipment> list;
+    private final Context context;
+    private int currentSelectedID = -1;
 
     // Listener cho nút Edit/Delete
     public interface ItemActionListener {
@@ -35,7 +38,7 @@ public class DeviceRecyclerAdapter extends RecyclerView.Adapter<DeviceRecyclerAd
         this.actionListener = listener;
     }
 
-    // Listener cho click vào item (hiển thị lên form)
+    // Listener cho click vào item
     public interface ItemClickListener {
         void onItemClick(Equipment e);
     }
@@ -87,22 +90,40 @@ public class DeviceRecyclerAdapter extends RecyclerView.Adapter<DeviceRecyclerAd
             holder.itemImage.setImageResource(R.drawable.ic_placeholder);
         }
 
+        // Set màu CardView dựa trên item được chọn
+        int adapterPos = holder.getBindingAdapterPosition();
+        if (adapterPos == currentSelectedID) {
+            holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.item_selected_bg));
+        } else {
+            holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.item_default_bg));
+        }
+
         // Nút Edit
         holder.btnEdit.setOnClickListener(v -> {
+            int pos = holder.getBindingAdapterPosition();
+            if (pos == RecyclerView.NO_POSITION) return;
             if (actionListener != null)
-                actionListener.onEdit(device);
+                actionListener.onEdit(list.get(pos));
         });
 
         // Nút Delete
         holder.btnDelete.setOnClickListener(v -> {
+            int pos = holder.getBindingAdapterPosition();
+            if (pos == RecyclerView.NO_POSITION) return;
             if (actionListener != null)
-                actionListener.onDelete(device);
+                actionListener.onDelete(list.get(pos));
         });
 
-        // Click vào toàn bộ item để hiển thị lên form
+        // Click vào item để chọn và highlight
         holder.itemView.setOnClickListener(v -> {
+            int pos = holder.getBindingAdapterPosition();
+            if (pos == RecyclerView.NO_POSITION) return;
+
+            currentSelectedID = pos;
+            notifyDataSetChanged(); // refresh để đổi màu
+
             if (clickListener != null)
-                clickListener.onItemClick(device);
+                clickListener.onItemClick(list.get(pos));
         });
     }
 
@@ -115,15 +136,17 @@ public class DeviceRecyclerAdapter extends RecyclerView.Adapter<DeviceRecyclerAd
         ImageView itemImage;
         TextView itemName, itemStatus, itemDescription;
         Button btnEdit, btnDelete;
+        CardView cardView;
 
         public DeviceViewHolder(@NonNull View itemView) {
             super(itemView);
             itemImage = itemView.findViewById(R.id.itemImage);
             itemName = itemView.findViewById(R.id.itemName);
-            itemStatus = itemView.findViewById(R.id.itemStatus); // Mới thêm
+            itemStatus = itemView.findViewById(R.id.itemStatus);
             itemDescription = itemView.findViewById(R.id.itemDescription);
             btnEdit = itemView.findViewById(R.id.btnEdit);
             btnDelete = itemView.findViewById(R.id.btnDelete);
+            cardView = itemView.findViewById(R.id.deviceItemCardView);
         }
     }
 }

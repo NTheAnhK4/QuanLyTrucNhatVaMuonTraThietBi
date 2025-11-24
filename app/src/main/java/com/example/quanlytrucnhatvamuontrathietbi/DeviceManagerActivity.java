@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -143,16 +144,25 @@ public class DeviceManagerActivity extends AppCompatActivity {
 
             @Override
             public void onDelete(Equipment e) {
-                int index = deviceList.indexOf(e);
-                if (index >= 0) {
-                    deviceList.remove(index);
-                    DataUtil.getInstance(DeviceManagerActivity.this).equipments.remove(e);
-                    adapter.notifyItemRemoved(index);
+                // Hiển thị popup xác nhận trước khi xóa
+                new AlertDialog.Builder(DeviceManagerActivity.this)
+                        .setTitle("Xác nhận xóa")
+                        .setMessage("Bạn có chắc chắn muốn xóa thiết bị này không?")
+                        .setPositiveButton("Đồng ý", (dialog, which) -> {
+                            int index = deviceList.indexOf(e);
+                            if (index >= 0) {
+                                deviceList.remove(index);
+                                DataUtil.getInstance(DeviceManagerActivity.this).equipments.remove(e);
+                                adapter.notifyItemRemoved(index);
 
-                    if (editingDevice != null && editingDevice.equals(e)) {
-                        resetForm();
-                    }
-                }
+                                if (editingDevice != null && editingDevice.equals(e)) {
+                                    resetForm();
+                                }
+                                Toast.makeText(DeviceManagerActivity.this, "Xóa thiết bị thành công", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton("Hủy", null)
+                        .show();
             }
         });
 

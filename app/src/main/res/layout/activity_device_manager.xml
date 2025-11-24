@@ -1,44 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="12dp"
-    android:background="#FFFFFF">
+    android:background="#F5F5F5">
 
     <!-- TOP BAR -->
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/topBar"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="56dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:background="#FFFFFF"
+        android:elevation="4dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
+        <!-- Nút Back -->
         <ImageView
             android:id="@+id/btnBack"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:padding="12dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
             android:src="@drawable/ic_arrow_back"
             android:contentDescription="Quay lại" />
 
+        <!-- Tiêu đề -->
         <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
+            android:id="@+id/titleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="Quản lý thiết bị"
             android:textStyle="bold"
-            android:textSize="20sp" />
-    </LinearLayout>
+            android:textSize="18sp"
+            android:textColor="#0E0E0E"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
 
     <!-- FORM THÊM THIẾT BỊ -->
     <LinearLayout
         android:id="@+id/addDeviceForm"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_below="@id/topBar"
-        android:layout_marginTop="12dp">
+        android:background="#FFFFFF"
+        android:padding="16dp"
+        android:elevation="2dp"
+        app:layout_constraintTop_toBottomOf="@id/topBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <EditText
             android:id="@+id/inputDeviceName"
@@ -46,7 +59,10 @@
             android:layout_height="48dp"
             android:hint="Nhập tên thiết bị"
             android:inputType="text"
-            android:padding="12dp" />
+            android:padding="12dp"
+            android:background="@drawable/edittext_bg"
+            android:textColor="#0E0E0E"
+            android:textSize="16sp"/>
 
         <EditText
             android:id="@+id/inputDeviceDescription"
@@ -56,38 +72,42 @@
             android:hint="Mô tả thiết bị"
             android:inputType="text"
             android:padding="12dp"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"
+            android:background="@drawable/edittext_bg"
+            android:textColor="#0E0E0E"
+            android:textSize="16sp"/>
 
-        <!-- Spinner cho tình trạng thiết bị -->
         <Spinner
             android:id="@+id/spinnerDeviceStatus"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginTop="8dp"
             android:padding="8dp"
-            android:spinnerMode="dropdown" />
+            android:background="@drawable/spinner_bg"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="12dp">
 
             <ImageView
                 android:id="@+id/imgPreview"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:background="#EEEEEE"
+                android:background="#E0E0E0"
                 android:scaleType="centerCrop"
-                android:contentDescription="Ảnh thiết bị" />
+                android:contentDescription="Ảnh thiết bị"/>
 
             <Button
                 android:id="@+id/btnPickImage"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
-                android:layout_marginLeft="16dp"
-                android:text="Chọn ảnh" />
+                android:layout_marginStart="16dp"
+                android:text="Chọn ảnh"
+                android:backgroundTint="#1976D2"
+                android:textColor="#FFFFFF"/>
         </LinearLayout>
 
         <Button
@@ -95,33 +115,37 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:text="Thêm thiết bị"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="16dp"
             android:backgroundTint="#1976D2"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"/>
     </LinearLayout>
 
-    <!-- DANH SÁCH THIẾT BỊ -->
+    <!-- RECYCLERVIEW DANH SÁCH THIẾT BỊ -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/deviceRecycler"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_above="@+id/bottomNav"
-        android:layout_below="@id/addDeviceForm"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="12dp"
-        />
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        app:layout_constraintTop_toBottomOf="@id/addDeviceForm"
+        app:layout_constraintBottom_toTopOf="@id/bottomNav"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- THANH MENU DƯỚI -->
+    <!-- BOTTOM NAVIGATION -->
     <LinearLayout
         android:id="@+id/bottomNav"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="70dp"
-        android:layout_alignParentBottom="true"
         android:orientation="horizontal"
         android:gravity="center"
-        android:background="@drawable/bottom_nav_bg">
+        android:background="#FFFFFF"
+        android:elevation="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Trang chủ -->
+        <!-- Home -->
         <LinearLayout
             android:id="@+id/navHome"
             android:layout_width="0dp"
@@ -132,14 +156,12 @@
 
             <ImageView
                 android:id="@+id/iconHome"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:padding="8dp"
-                android:src="@drawable/ic_home"
-                android:contentDescription="Trang chủ" />
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_home"/>
         </LinearLayout>
 
-        <!-- Cài đặt -->
+        <!-- Setting -->
         <LinearLayout
             android:id="@+id/navSetting"
             android:layout_width="0dp"
@@ -150,14 +172,12 @@
 
             <ImageView
                 android:id="@+id/iconSetting"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:padding="8dp"
-                android:src="@drawable/ic_setting"
-                android:contentDescription="Cài đặt" />
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_setting"/>
         </LinearLayout>
 
-        <!-- Tài khoản -->
+        <!-- Account -->
         <LinearLayout
             android:id="@+id/navAccount"
             android:layout_width="0dp"
@@ -168,13 +188,11 @@
 
             <ImageView
                 android:id="@+id/iconAccount"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:padding="8dp"
-                android:src="@drawable/ic_person"
-                android:contentDescription="Tài khoản" />
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_person"/>
         </LinearLayout>
 
     </LinearLayout>
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

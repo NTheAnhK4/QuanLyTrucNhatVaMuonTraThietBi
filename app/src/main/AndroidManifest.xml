@@ -16,14 +16,25 @@
             android:exported="true" />
         <!-- Đặt LoginActivity làm màn hình khởi động -->
         <activity
-            android:name=".LoginActivity"
+            android:name=".DutyScheduleView.DutyScheduleListActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".DutyScheduleView.DutyScheduleActivity"
+            android:exported="false"
+            android:label="Tạo lịch trực" />
+
+        <activity
+            android:name=".DutyScheduleView.ViewScheduleActivity"
+            android:exported="false"
+            android:label="Chi tiết lịch" />
+
+
         <activity
             android:name=".MainActivity"
             android:exported="false"></activity>

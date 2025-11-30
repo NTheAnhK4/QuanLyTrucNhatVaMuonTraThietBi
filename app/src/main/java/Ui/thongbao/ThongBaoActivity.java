@@ -29,7 +29,7 @@ public class ThongBaoActivity extends AppCompatActivity {
         dsThongBao = new ArrayList<>();
 
         // Tạo dữ liệu mẫu
-        dsThongBao.add(new ThongBao("Yêu cầu mượn thiết bị", "Bạn đã mượn thành công máy chiếu", "Hôm nay, 09:15", false));
+        dsThongBao.add(new ThongBao("Yêu cầu mượn thiết bị", "Bạn đã mượn thành công máy chiếu", "Hôm nay, 09:15", true));
         dsThongBao.add(new ThongBao("Phê duyệt đơn trực nhật", "Đơn của bạn đã được duyệt", "Hôm qua", true));
 
         adapter = new ThongBaoAdapter(dsThongBao);

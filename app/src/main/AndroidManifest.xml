@@ -14,7 +14,7 @@
 
         <!-- Đặt LoginActivity làm màn hình khởi động -->
         <activity
-            android:name="Ui.thongbao.ThongBaoActivity"
+            android:name=".DutyScheduleView.DutyScheduleActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

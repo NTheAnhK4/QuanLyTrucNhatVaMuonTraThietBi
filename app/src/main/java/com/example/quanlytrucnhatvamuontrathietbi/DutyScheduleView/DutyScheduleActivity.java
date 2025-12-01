@@ -33,6 +33,10 @@ import Data.DataUtil;
 import Data.DutySchedule;
 import Data.DutySchedulesStatus;
 import Data.User;
+import Data.Notification;
+
+
+
 
 public class DutyScheduleActivity extends AppCompatActivity {
 
@@ -336,6 +340,17 @@ public class DutyScheduleActivity extends AppCompatActivity {
             );
 
             dataUtil.dutySchedules.add(newSchedule);
+            // Tạo thông báo khi tạo lịch thành công
+            String title = "Lịch trực mới đã được tạo";
+            String content = "Ngày: " + selectedDate +
+                    "\nCa: " + selectedShift +
+                    "\nLoại trực: " + selectedDutyType +
+                    "\nPhòng: " + roomName;
+
+            // id để null, Repository sẽ tự sinh UUID
+            Notification noti = new Notification(null, title, content);
+            dataUtil.notifications.add(noti);
+
 
             // Reset UI
             importedParticipantIds.clear();

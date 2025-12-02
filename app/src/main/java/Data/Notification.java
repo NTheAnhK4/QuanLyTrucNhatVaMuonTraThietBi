@@ -85,4 +85,14 @@ public class Notification implements Serializable, Identifiable {
     public int hashCode() {
         return Objects.hashCode(id);
     }
+    private boolean approved;
+
+    public boolean isApproved() {
+        return approved;
+    }
+
+    public void setApproved(boolean approved) {
+        this.approved = approved;
+    }
+
 }

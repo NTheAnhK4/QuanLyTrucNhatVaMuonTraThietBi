@@ -15,11 +15,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import Data.DataUtil;
+import Data.Notification;
 import Data.BorrowRequest;
 import Data.BorrowRequestStatus;
 
 public class BorrowRequestActivity extends AppCompatActivity {
-
+    private DataUtil dataUtil;
     private RecyclerView recyclerRequests;
     private List<BorrowRequest> requestList;
     private BorrowRequestAdapter adapter;
@@ -29,7 +31,7 @@ public class BorrowRequestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.borrow_request);
-
+        dataUtil = DataUtil.getInstance(getApplicationContext());
         recyclerRequests = findViewById(R.id.recycler_requests);
         recyclerRequests.setLayoutManager(new LinearLayoutManager(this));
         Button btnBack = findViewById(R.id.btnBack);
@@ -76,13 +78,43 @@ public class BorrowRequestActivity extends AppCompatActivity {
 
             holder.btnApprove.setOnClickListener(v -> {
                 request.setStatus(BorrowRequestStatus.Approved);
+                dataUtil.borrowRequests.update(request);
+
+                String title = "Yêu cầu mượn thiết bị đã được duyệt";
+                String content =
+                        "Mã yêu cầu: " + request.getId() +
+                                "\nMã người dùng: " + request.getIdUser() +
+                                "\nMã thiết bị: " + request.getIdEquipment() +
+                                "\nNgày mượn: " + request.getBorrowDay() +
+                                "\nThời gian: " + request.getStartBorrowDay() + " - " + request.getEndBorrowDay();
+
+                Notification noti = new Notification(null, title, content);
+                noti.setApproved(true);
+                dataUtil.notifications.add(noti);
+
                 notifyItemChanged(position);
             });
 
             holder.btnReject.setOnClickListener(v -> {
                 request.setStatus(BorrowRequestStatus.Rejected);
+                dataUtil.borrowRequests.update(request);
+
+                String title = "Yêu cầu mượn thiết bị không được duyệt";
+                String content =
+                        "Mã yêu cầu: " + request.getId() +
+                                "\nMã người dùng: " + request.getIdUser() +
+                                "\nMã thiết bị: " + request.getIdEquipment() +
+                                "\nNgày mượn: " + request.getBorrowDay() +
+                                "\nThời gian: " + request.getStartBorrowDay() + " - " + request.getEndBorrowDay();
+
+                Notification noti = new Notification(null, title, content);
+                noti.setApproved(false);
+                dataUtil.notifications.add(noti);
+
+
                 notifyItemChanged(position);
             });
+
         }
 
         @Override

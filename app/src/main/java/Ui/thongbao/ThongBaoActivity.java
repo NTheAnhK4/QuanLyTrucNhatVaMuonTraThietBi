@@ -56,7 +56,8 @@ public class ThongBaoActivity extends AppCompatActivity {
                     n.getTitle(),          // tiêu đề
                     n.getContent(),        // nội dung
                     n.getTimeAgo(),        // chuỗi thời gian tương đối: "5 phút trước" ...
-                    false                  // đã đọc hay chưa, tạm để false
+                    n.isApproved()
+                    // đã đọc hay chưa, tạm để false
             ));
         }
     }

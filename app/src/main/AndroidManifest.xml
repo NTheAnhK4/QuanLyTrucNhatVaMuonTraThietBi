@@ -11,27 +11,42 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.QuanLyTrucNhatVaMuonTraThietBi">
-
+        <activity
+            android:name=".DeviceManagerActivity"
+            android:exported="true" />
         <!-- Đặt LoginActivity làm màn hình khởi động -->
         <activity
-            android:name=".DutyScheduleView.DutyScheduleActivity"
+            android:name=".DutyScheduleView.DutyScheduleListActivity"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".DutyScheduleView.DutyScheduleActivity"
+            android:exported="false"
+            android:label="Tạo lịch trực" />
+
+        <activity
+            android:name=".DutyScheduleView.ViewScheduleActivity"
+            android:exported="false"
+            android:label="Chi tiết lịch" />
 
 
         <activity
             android:name=".MainActivity"
-            android:exported="false">
-        </activity>
-
+            android:exported="false"></activity>
         <activity
             android:name=".RegisterActivity"
-            android:exported="false">
-        </activity>
+            android:exported="false"></activity>
+        <activity
+            android:name=".TAExampleDataUlti"
+            android:exported="true" />
+        <activity
+            android:name=".BorrowRequestActivity"
+            android:exported="true"></activity>
     </application>
 
 </manifest>

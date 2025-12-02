@@ -8,10 +8,10 @@
       <SelectionState runConfigName="ThongBaoActivity (4)">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="DutyScheduleActivity">
+      <SelectionState runConfigName="DutyScheduleActivity (1)">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="DutyScheduleActivity (1)">
+      <SelectionState runConfigName="DutyScheduleListActivity">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

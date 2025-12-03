@@ -12,6 +12,15 @@ public class BorrowRequest implements Serializable, Identifiable{
     private int endBorrowDay;
     private BorrowRequestStatus status;
 
+    public BorrowRequest(String id, String idUser, String idEquipment, String borrowDay, int startBorrowDay, int endBorrowDay, BorrowRequestStatus status) {
+        this.id = id;
+        this.idUser = idUser;
+        this.idEquipment = idEquipment;
+        this.borrowDay = borrowDay;
+        this.startBorrowDay = startBorrowDay;
+        this.endBorrowDay = endBorrowDay;
+        this.status = status; // Gán trạng thái
+    }
     public BorrowRequest(String id,String idUser, String idEquipment, String borrowDay, int startBorrowDay, int endBorrowDay) {
         this.idUser = idUser;
         this.idEquipment = idEquipment;

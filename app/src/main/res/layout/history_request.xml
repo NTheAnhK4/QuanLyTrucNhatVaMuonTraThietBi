@@ -8,7 +8,7 @@
     android:background="#F0F0F0">
 
     <LinearLayout
-        android:id="@+id/headerLayout"
+        android:id="@+id/headerLayoutHistory"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -23,7 +23,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <Button
-            android:id="@+id/btnBack"
+            android:id="@+id/btnBackHistory"
             android:layout_width="48dp"
             android:layout_height="32dp"
             android:background="?attr/selectableItemBackground"
@@ -35,41 +35,18 @@
             android:textColor="#000" />
 
         <TextView
-            android:id="@+id/tvHeaderTitle"
+            android:id="@+id/historyHeaderTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Yêu cầu mượn/trả thiết bị"
+            android:text="Lịch sử  yêu cầu mượn thiết bị"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="#000"
             android:layout_marginStart="16dp" />
 
-        <ImageView
-            android:id="@+id/iconEye"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_eye_outline"
-            app:tint="#1F2937"
-            android:contentDescription="Icon theo dõi"
-            android:layout_marginStart="16dp"/>
 
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/tv_section_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Yêu Cầu Chờ Duyệt"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="#1F2937"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintTop_toBottomOf="@id/headerLayout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_requests"
@@ -78,16 +55,16 @@
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         android:clipToPadding="false"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintTop_toBottomOf="@id/tv_section_title"
-        app:layout_constraintBottom_toTopOf="@id/bottomNav"
+        android:layout_marginTop="16dp" app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@id/headerLayoutHistory"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavHistory"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:listitem="@layout/item_request"
+        tools:listitem="@layout/history_item_request"
         tools:itemCount="3" />
 
     <LinearLayout
-        android:id="@+id/empty_state_view"
+        android:id="@+id/empty_state_view_history"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -116,7 +93,7 @@
     </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNav"
+        android:id="@+id/bottomNavHistory"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:menu="@menu/menu_bottom"

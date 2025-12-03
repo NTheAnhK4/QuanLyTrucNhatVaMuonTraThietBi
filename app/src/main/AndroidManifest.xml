@@ -16,11 +16,11 @@
             android:exported="true" />
         <!-- Đặt LoginActivity làm màn hình khởi động -->
         <activity
-            android:name=".DutyScheduleView.DutyScheduleListActivity"
+            android:name="Ui.thongbao.ThongBaoActivity"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 

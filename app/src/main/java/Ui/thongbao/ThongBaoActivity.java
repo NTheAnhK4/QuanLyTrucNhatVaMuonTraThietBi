@@ -1,8 +1,10 @@
 package Ui.thongbao;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;                    // ⭐ THÊM
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,12 +24,26 @@ public class ThongBaoActivity extends AppCompatActivity {
     private List<ThongBao> dsThongBao;
     private DataUtil dataUtil;
 
+    private Toolbar toolbarThongBao;                       // ⭐ THÊM
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_thong_bao);
 
         dataUtil = DataUtil.getInstance(getApplicationContext());
+
+        // ⭐ ÁNH XẠ TOOLBAR
+        toolbarThongBao = findViewById(R.id.toolbarThongBao);
+        setSupportActionBar(toolbarThongBao);
+
+//        // ⭐ BẮT SỰ KIỆN ẤN MŨI TÊN TRÊN TOOLBAR
+//        toolbarThongBao.setNavigationOnClickListener(v -> {
+//            // TODO: Đổi HomeActivity thành màn hình home thực tế của bạn
+//            Intent intent = new Intent(ThongBaoActivity.this, HomeActivity.class);
+//            startActivity(intent);
+//            finish(); // đóng màn hình thông báo
+//        });
 
         recyclerView = findViewById(R.id.rcvThongBao);
         dsThongBao = new ArrayList<>();
@@ -57,7 +73,6 @@ public class ThongBaoActivity extends AppCompatActivity {
                     n.getContent(),        // nội dung
                     n.getTimeAgo(),        // chuỗi thời gian tương đối: "5 phút trước" ...
                     n.isApproved()
-                    // đã đọc hay chưa, tạm để false
             ));
         }
     }

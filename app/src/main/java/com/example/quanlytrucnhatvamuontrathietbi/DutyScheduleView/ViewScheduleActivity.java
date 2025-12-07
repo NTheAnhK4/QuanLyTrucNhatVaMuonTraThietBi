@@ -23,7 +23,7 @@ public class ViewScheduleActivity extends AppCompatActivity {
     private DutySchedule currentSchedule;
 
     private MaterialToolbar toolbar;
-    private TextInputEditText edtParticipantName, edtDutyType, edtRoom, edtDate, edtShift, edtScheduleStatus;
+    private TextInputEditText edtParticipantName, edtDutyType, edtRoom, edtDate, edtShiftRange, edtScheduleStatus;
     private Button btnDelete, btnBack;
 
     @Override
@@ -55,7 +55,10 @@ public class ViewScheduleActivity extends AppCompatActivity {
         edtDutyType = findViewById(R.id.edt_duty_type);
         edtRoom = findViewById(R.id.edt_room);
         edtDate = findViewById(R.id.edt_date);
-        edtShift = findViewById(R.id.edt_shift);
+
+        // SỬ DỤNG ID CŨ (edt_shift) NHƯNG ĐÃ ĐỔI TÊN BIẾN
+        edtShiftRange = findViewById(R.id.edt_shift);
+
         btnDelete = findViewById(R.id.btn_delete);
         btnBack = findViewById(R.id.btn_back);
     }
@@ -70,6 +73,7 @@ public class ViewScheduleActivity extends AppCompatActivity {
     }
 
     private void loadScheduleData(String id) {
+        // Giả định: dutySchedules.getAll() trả về danh sách các DutySchedule có trường startShift/endShift
         for (DutySchedule schedule : dataUtil.dutySchedules.getAll()) {
             if (schedule.getId().equals(id)) {
                 currentSchedule = schedule;
@@ -87,9 +91,12 @@ public class ViewScheduleActivity extends AppCompatActivity {
 
         // Hiển thị thông tin
         edtDutyType.setText(currentSchedule.getDutyType());
-        edtRoom.setText(currentSchedule.getClassName()); // Dùng className thay vì classroom
-        edtDate.setText(currentSchedule.getDay()); // Dùng day thay vì date
-        edtShift.setText(currentSchedule.getShiftTime()); // Dùng shiftTime thay vì shift
+        edtRoom.setText(currentSchedule.getClassName());
+        edtDate.setText(currentSchedule.getDay());
+
+        // THAY ĐỔI QUAN TRỌNG: Hiển thị Ca Bắt đầu - Ca Kết thúc
+        String shiftRange = currentSchedule.getStartShift() + " - " + currentSchedule.getEndShift();
+        edtShiftRange.setText(shiftRange);
 
         // Hiển thị trạng thái
         String statusText = currentSchedule.getStatus().toString().equals("Completed") ? "Đã hoàn thành" : "Chờ thực hiện";
@@ -114,6 +121,7 @@ public class ViewScheduleActivity extends AppCompatActivity {
             // Chỉ kiểm tra User
             for (User user : dataUtil.users.getAll()) {
                 if (user.getId().equals(userId)) {
+                    // Hiển thị MSV - Tên
                     resolvedDetails.add(user.getMsv() + " - " + user.getName());
                     break;
                 }

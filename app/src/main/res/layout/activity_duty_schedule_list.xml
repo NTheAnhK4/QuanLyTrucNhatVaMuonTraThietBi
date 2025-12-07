@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F0F2F5"
-    tools:context=".DutyScheduleListActivity">
+    tools:context=".DutyScheduleView.DutyScheduleListActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
@@ -17,9 +17,14 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/white"
+
+            android:background="?attr/colorPrimary"
             app:title="Danh sách Lịch trực nhật"
-            app:titleTextColor="#333333" />
+            app:titleTextColor="@android:color/white"
+
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:navigationIconTint="@android:color/white" />
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -49,14 +54,14 @@
         android:id="@+id/fab_add_schedule"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="72dp"
         android:contentDescription="Tạo lịch trực nhật mới"
         android:src="@drawable/ic_add"
-        app:tint="@android:color/white"
         app:backgroundTint="?attr/colorPrimary"
         app:elevation="6dp"
-        android:layout_gravity="bottom|end"/>
+        app:tint="@android:color/white" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
@@ -65,6 +70,8 @@
         android:background="@android:color/white"
         app:menu="@menu/bottom_nav_menu"
         android:layout_gravity="bottom"
-        app:elevation="8dp"/>
+        app:elevation="8dp"
+        app:itemIconTint="@color/bottom_nav_color_selector"
+        app:itemTextColor="@color/bottom_nav_color_selector" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

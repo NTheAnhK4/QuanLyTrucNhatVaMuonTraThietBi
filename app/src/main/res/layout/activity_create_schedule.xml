@@ -16,9 +16,13 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/white"
+
+            android:background="?attr/colorPrimary"
             app:title="Tạo lịch trực nhật"
-            app:titleTextColor="#333333" />
+            app:titleTextColor="@android:color/white"
+
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:navigationIconTint="@android:color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
@@ -84,6 +88,23 @@
                             android:maxLines="1" />
                     </com.google.android.material.textfield.TextInputLayout>
 
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:hint="Ngày trực"
+                        app:endIconMode="custom"
+                        app:endIconDrawable="@drawable/ic_calendar_today"
+                        app:endIconTint="?attr/colorPrimary"> <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edt_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:cursorVisible="false"
+                        android:inputType="none" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -94,17 +115,13 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:layout_marginEnd="8dp"
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                            android:hint="Ngày trực"
-                            app:endIconMode="custom"
-                            app:endIconDrawable="@drawable/ic_calendar_today">
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                            android:hint="Ca Bắt đầu">
 
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/edt_date"
+                            <AutoCompleteTextView
+                                android:id="@+id/edt_start_shift"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:focusable="false"
-                                android:cursorVisible="false"
                                 android:inputType="none" />
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -114,15 +131,16 @@
                             android:layout_weight="1"
                             android:layout_marginStart="8dp"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                            android:hint="Ca trực">
+                            android:hint="Ca Kết thúc">
 
                             <AutoCompleteTextView
-                                android:id="@+id/edt_shift"
+                                android:id="@+id/edt_end_shift"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:inputType="none" />
                         </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
+
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -156,14 +174,13 @@
                         android:layout_marginBottom="12dp"
                         android:hint="Tìm kiếm theo MSV hoặc Tên"
                         app:endIconDrawable="@drawable/ic_add"
-                        app:endIconMode="custom">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edt_participant_id"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="textCapCharacters"
-                            android:maxLines="1" />
+                        app:endIconMode="custom"
+                        app:endIconTint="?attr/colorPrimary"> <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edt_participant_id"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textCapCharacters"
+                        android:maxLines="1" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <HorizontalScrollView

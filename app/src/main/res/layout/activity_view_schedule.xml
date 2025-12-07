@@ -16,10 +16,15 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/white"
+
+            android:background="?attr/colorPrimary"
+
             app:navigationIcon="@drawable/ic_arrow_back"
+            app:navigationIconTint="@android:color/white"
+
             app:title="Chi tiết lịch trực"
-            app:titleTextColor="#333333"
+            app:titleTextColor="@android:color/white"
+
             app:titleCentered="true" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -85,9 +90,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:focusable="false"
-                            android:cursorVisible="false"
-                            android:clickable="false"
-                            android:textColor="#333333" />
+                            android:inputType="none"
+                            android:textColor="?attr/colorPrimary"
+                            android:textStyle="bold" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -102,8 +107,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:focusable="false"
-                            android:cursorVisible="false"
-                            android:clickable="false"
+                            android:inputType="none"
                             android:textColor="#333333" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -119,43 +123,50 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:focusable="false"
-                            android:cursorVisible="false"
-                            android:clickable="false"
+                            android:inputType="none"
                             android:textColor="#333333" />
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
-                        android:hint="Ngày trực">
+                        android:orientation="horizontal">
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edt_date"
-                            android:layout_width="match_parent"
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:focusable="false"
-                            android:cursorVisible="false"
-                            android:clickable="false"
-                            android:textColor="#333333" />
-                    </com.google.android.material.textfield.TextInputLayout>
+                            android:layout_weight="1"
+                            android:layout_marginEnd="8dp"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:hint="Ngày trực">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Ca trực">
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edt_date"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:focusable="false"
+                                android:inputType="none"
+                                android:textColor="#333333" />
+                        </com.google.android.material.textfield.TextInputLayout>
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edt_shift"
-                            android:layout_width="match_parent"
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:focusable="false"
-                            android:cursorVisible="false"
-                            android:clickable="false"
-                            android:textColor="#333333" />
-                    </com.google.android.material.textfield.TextInputLayout>
+                            android:layout_weight="1"
+                            android:layout_marginStart="8dp"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:hint="Ca trực">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edt_shift"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:focusable="false"
+                                android:inputType="none"
+                                android:textColor="#333333"
+                                android:textStyle="bold" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 

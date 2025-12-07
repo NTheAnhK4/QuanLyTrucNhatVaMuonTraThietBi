@@ -1,25 +1,29 @@
 package Data;
 
 import java.io.Serializable;
-import java.util.List; // QUAN TRỌNG: Cần import List
+import java.util.List;
 import java.util.Objects;
 
 public class DutySchedule implements Serializable, Identifiable {
     private String id;
     private String day;
-    private String shiftTime;   // Ca trực (ví dụ: "Ca 1 (7h - 9h)")
+
+    // THAY THẾ shiftTime CŨ
+    private String startShift;  // Ca bắt đầu (ví dụ: "Ca 1")
+    private String endShift;    // Ca kết thúc (ví dụ: "Ca 4")
+
     private String dutyType;    // Loại trực nhật (ví dụ: "Phòng lý thuyết")
     private String className;   // Tên phòng học (ví dụ: "A1 - 101")
     private String creatorId;   // ID người tạo lịch
     private DutySchedulesStatus status;
 
-    // THAY ĐỔI CƠ BẢN: Thay thế groupID bằng List<String> assigneeIds
     private List<String> assigneeIds; // DANH SÁCH ID CỦA SINH VIÊN (USERS) ĐƯỢC PHÂN CÔNG
 
     // CONSTRUCTOR MỚI
-    public DutySchedule(String day, String shiftTime, String dutyType, String className, String creatorId, DutySchedulesStatus status, List<String> assigneeIds) {
+    public DutySchedule(String day, String startShift, String endShift, String dutyType, String className, String creatorId, DutySchedulesStatus status, List<String> assigneeIds) {
         this.day = day;
-        this.shiftTime = shiftTime;
+        this.startShift = startShift;
+        this.endShift = endShift;
         this.dutyType = dutyType;
         this.className = className;
         this.creatorId = creatorId;
@@ -28,12 +32,22 @@ public class DutySchedule implements Serializable, Identifiable {
     }
 
     // CONSTRUCTOR ĐẦY ĐỦ ID
-    public DutySchedule(String id, String day, String shiftTime, String dutyType, String className, String creatorId, DutySchedulesStatus status, List<String> assigneeIds) {
-        this(day, shiftTime, dutyType, className, creatorId, status, assigneeIds);
+    public DutySchedule(String id, String day, String startShift, String endShift, String dutyType, String className, String creatorId, DutySchedulesStatus status, List<String> assigneeIds) {
+        this(day, startShift, endShift, dutyType, className, creatorId, status, assigneeIds);
         this.id = id;
     }
 
     // --- GETTERS AND SETTERS ---
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getDay() {
         return day;
@@ -42,13 +56,20 @@ public class DutySchedule implements Serializable, Identifiable {
     public void setDay(String day) {
         this.day = day;
     }
-
-    public String getShiftTime() {
-        return shiftTime;
+    public String getStartShift() {
+        return startShift;
     }
 
-    public void setShiftTime(String shiftTime) {
-        this.shiftTime = shiftTime;
+    public void setStartShift(String startShift) {
+        this.startShift = startShift;
+    }
+
+    public String getEndShift() {
+        return endShift;
+    }
+
+    public void setEndShift(String endShift) {
+        this.endShift = endShift;
     }
 
     public String getDutyType() {
@@ -83,23 +104,12 @@ public class DutySchedule implements Serializable, Identifiable {
         this.status = status;
     }
 
-    // GETTER/SETTER MỚI CHO DANH SÁCH SINH VIÊN
     public List<String> getAssigneeIds() {
         return assigneeIds;
     }
 
     public void setAssigneeIds(List<String> assigneeIds) {
         this.assigneeIds = assigneeIds;
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(String id) {
-        this.id = id;
     }
 
     @Override

@@ -22,10 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import Data.Notification;
 import Data.BorrowRequest;
 import Data.BorrowRequestStatus;
 import Data.DataUtil;
 import Data.Equipment;
+
 
 public class BorrowRequestActivity extends AppCompatActivity {
 
@@ -189,7 +191,20 @@ public class BorrowRequestActivity extends AppCompatActivity {
             holder.btnApprove.setOnClickListener(v -> {
                 // 1. Cập nhật trạng thái trong dữ liệu gốc
                 request.setStatus(BorrowRequestStatus.Approved);
-                DataUtil.getInstance(context).borrowRequests.update(request);
+                DataUtil dataUtil = DataUtil.getInstance(context);
+                dataUtil.borrowRequests.update(request);
+
+                // 1.1. TẠO THÔNG BÁO VÀ LƯU VÀO DATAUTIL.NOTIFICATIONS
+                String title = "Yêu cầu mượn đã được DUYỆT";
+                String content = "Yêu cầu mượn thiết bị " + request.getIdEquipment()
+                        + " ngày " + request.getBorrowDay()
+                        + " từ " + request.getStartBorrowDay() + "h đến "
+                        + request.getEndBorrowDay() + "h đã được duyệt.";
+
+                // dùng constructor 2 tham số (title, content)
+                Notification notification = new Notification(title, content);
+                // đánh dấu là đã được duyệt (approved = true)
+                notification.setApproved(true);
 
                 // 2. Xóa yêu cầu khỏi danh sách hiển thị
                 requests.remove(position);
@@ -211,7 +226,20 @@ public class BorrowRequestActivity extends AppCompatActivity {
             holder.btnReject.setOnClickListener(v -> {
                 // 1. Cập nhật trạng thái trong dữ liệu gốc
                 request.setStatus(BorrowRequestStatus.Rejected);
-                DataUtil.getInstance(context).borrowRequests.update(request);
+                DataUtil dataUtil = DataUtil.getInstance(context);
+                dataUtil.borrowRequests.update(request);
+
+                // 1.1. TẠO THÔNG BÁO TỪ CHỐI
+                String title = "Yêu cầu mượn đã bị TỪ CHỐI";
+                String content = "Yêu cầu mượn thiết bị " + request.getIdEquipment()
+                        + " ngày " + request.getBorrowDay()
+                        + " từ " + request.getStartBorrowDay() + "h đến "
+                        + request.getEndBorrowDay() + "h đã bị từ chối.";
+
+                Notification notification = new Notification(title, content);
+                // có thể setApproved(false) để phân biệt
+                notification.setApproved(false);
+                dataUtil.notifications.add(notification);
 
                 // 2. Xóa yêu cầu khỏi danh sách hiển thị
                 requests.remove(position);

@@ -69,7 +69,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
                         <Button
-                            android:id="@+id/button"
+                            android:id="@+id/btnTao"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Tạo"
@@ -112,6 +112,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
                         <Button
+                            android:id="@+id/btnQuanLy"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Quản lý"
@@ -153,8 +154,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
                         <Button
-                            android:id="@+id/button8"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Duyệt" android:backgroundTint="#005BBB" android:textColor="#FFFFFF"/>
+                            android:id="@+id/btnDuyet"
+                            android:layout_height="wrap_content"
+                            android:text="Duyệt"
+
+                            android:backgroundTint="#005BBB"
+                            android:textColor="#FFFFFF"/>
                     </TableRow>
                 </LinearLayout>
             </LinearLayout>

@@ -7,10 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast; // Import Toast để hiển thị thông báo
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.quanlytrucnhatvamuontrathietbi.R;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder; // Import Material Dialog
 
 import Data.DataUtil;
 import Data.DutySchedule;
@@ -48,16 +50,19 @@ public class DutyScheduleAdapter extends RecyclerView.Adapter<DutyScheduleAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         DutySchedule schedule = dutySchedules.get(position);
 
+        // Hiển thị thông tin cơ bản
         holder.tvRoom.setText("Phòng: " + schedule.getClassName());
         holder.tvDate.setText("Ngày: " + schedule.getDay());
-
-        // GÁN DỮ LIỆU MỚI: Loại trực nhật
         holder.tvDutyType.setText("Loại: " + schedule.getDutyType());
+
+        // THAY ĐỔI QUAN TRỌNG: Hiển thị Ca Bắt đầu - Ca Kết thúc
+        String shiftRange = schedule.getStartShift() + " - " + schedule.getEndShift();
+        holder.tvShiftRange.setText("Ca: " + shiftRange);
 
         // Hiển thị Tên sinh viên
         holder.tvAssigneeName.setText(resolveAssigneeNames(schedule.getAssigneeIds()));
 
-        // Xử lý Trạng thái và nút Hoàn thành (Giữ nguyên logic cũ)
+        // Xử lý Trạng thái và nút Hoàn thành
         DutySchedulesStatus status = schedule.getStatus();
         holder.tvStatusBadge.setText(status == DutySchedulesStatus.Completed ? "Đã hoàn thành" : "Chờ thực hiện");
 
@@ -76,12 +81,9 @@ public class DutyScheduleAdapter extends RecyclerView.Adapter<DutyScheduleAdapte
             context.startActivity(intent);
         });
 
-        // Xử lý sự kiện CLICK NÚT HOÀN THÀNH
+        // ⭐ THAY ĐỔI: Xử lý sự kiện CLICK NÚT HOÀN THÀNH bằng hộp thoại xác nhận
         holder.btnCompleteDuty.setOnClickListener(v -> {
-            schedule.setStatus(DutySchedulesStatus.Completed);
-            dataUtil.dutySchedules.update(schedule);
-            // Cần cast context sang Activity để gọi loadSchedules nếu cần sắp xếp lại
-            ((DutyScheduleListActivity) context).loadSchedules();
+            showCompletionConfirmation(schedule, position);
         });
     }
 
@@ -91,8 +93,8 @@ public class DutyScheduleAdapter extends RecyclerView.Adapter<DutyScheduleAdapte
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        // KHAI BÁO BIẾN MỚI
-        TextView tvRoom, tvDate, tvStatusBadge, tvAssigneeName, tvDutyType;
+        // CẬP NHẬT: Thêm tvShiftRange, loại bỏ tvShift cũ nếu có
+        TextView tvRoom, tvDate, tvStatusBadge, tvAssigneeName, tvDutyType, tvShiftRange;
         Button btnCompleteDuty;
 
         public ViewHolder(@NonNull View itemView) {
@@ -101,7 +103,8 @@ public class DutyScheduleAdapter extends RecyclerView.Adapter<DutyScheduleAdapte
             tvDate = itemView.findViewById(R.id.tv_date);
             tvStatusBadge = itemView.findViewById(R.id.tv_status_badge);
             tvAssigneeName = itemView.findViewById(R.id.tv_assignee_name);
-            tvDutyType = itemView.findViewById(R.id.tv_duty_type); // ÁNH XẠ BIẾN MỚI
+            tvDutyType = itemView.findViewById(R.id.tv_duty_type);
+            tvShiftRange = itemView.findViewById(R.id.tv_shift);
             btnCompleteDuty = itemView.findViewById(R.id.btn_complete_duty);
         }
     }
@@ -117,7 +120,6 @@ public class DutyScheduleAdapter extends RecyclerView.Adapter<DutyScheduleAdapte
         List<String> names = new ArrayList<>();
 
         for (String userId : assigneeIds) {
-            // Chỉ kiểm tra User (loại bỏ Group)
             for (User user : dataUtil.users.getAll()) {
                 if (user.getId().equals(userId)) {
                     names.add(user.getName());
@@ -135,6 +137,46 @@ public class DutyScheduleAdapter extends RecyclerView.Adapter<DutyScheduleAdapte
             return String.join(", ", names);
         } else {
             return names.get(0) + ", " + names.get(1) + " và " + (names.size() - 2) + " người khác";
+        }
+    }
+
+    /**
+     * Hiển thị hộp thoại xác nhận trước khi đánh dấu lịch trực là hoàn thành.
+     * @param schedule Lịch trực cần hoàn thành.
+     * @param position Vị trí item trong danh sách.
+     */
+    private void showCompletionConfirmation(DutySchedule schedule, int position) {
+        new MaterialAlertDialogBuilder(context)
+                .setTitle("Xác nhận Hoàn thành")
+                .setMessage("Bạn có chắc chắn muốn đánh dấu lịch trực nhật này là Đã hoàn thành? Hành động này không thể hoàn tác.")
+                .setNegativeButton("Hủy", (dialog, which) -> {
+                    dialog.dismiss();
+                })
+                .setPositiveButton("Xác nhận", (dialog, which) -> {
+                    // Thực hiện logic hoàn thành sau khi xác nhận
+                    handleDutyCompletion(schedule, position);
+                })
+                .show();
+    }
+
+    /**
+     * Thực hiện logic đánh dấu lịch trực là hoàn thành.
+     * @param schedule Lịch trực cần hoàn thành.
+     * @param position Vị trí item trong danh sách.
+     */
+    private void handleDutyCompletion(DutySchedule schedule, int position) {
+        schedule.setStatus(DutySchedulesStatus.Completed);
+        dataUtil.dutySchedules.update(schedule);
+
+        Toast.makeText(context, "Đã đánh dấu lịch trực nhật là Đã hoàn thành.", Toast.LENGTH_SHORT).show();
+
+        // Cập nhật giao diện:
+        if (context instanceof DutyScheduleListActivity) {
+            // Nếu context là Activity cha, gọi loadSchedules để sắp xếp/refresh toàn bộ danh sách
+            ((DutyScheduleListActivity) context).loadSchedules();
+        } else {
+            // Nếu không thể gọi Activity cha, chỉ refresh item hiện tại
+            notifyItemChanged(position);
         }
     }
 }

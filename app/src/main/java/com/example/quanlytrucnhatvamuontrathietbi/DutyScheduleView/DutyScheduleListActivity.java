@@ -14,7 +14,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import Data.DataUtil;
 import Data.DutySchedule;
-import Data.DutySchedulesStatus; // Import này cần thiết để sắp xếp
+import Data.DutySchedulesStatus;
 
 import java.util.Collections;
 import java.util.List;
@@ -71,12 +71,12 @@ public class DutyScheduleListActivity extends AppCompatActivity {
             Intent intent = new Intent(DutyScheduleListActivity.this, DutyScheduleActivity.class);
             startActivity(intent);
         });
-
-        // 💡 Listener cho Bottom Navigation Bar (Nếu cần xử lý điều hướng)
-        // bottomNavigationView.setOnItemSelectedListener(item -> { ... });
     }
 
-    void loadSchedules() {
+    /**
+     * Tải và sắp xếp danh sách lịch trực, cập nhật RecyclerView và trạng thái trống.
+     */
+    public void loadSchedules() {
         List<DutySchedule> schedules = dataUtil.dutySchedules.getAll();
 
         // Sắp xếp: Lịch chưa hoàn thành (Pending) lên trước lịch đã hoàn thành

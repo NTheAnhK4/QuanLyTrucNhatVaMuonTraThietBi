@@ -372,7 +372,7 @@ public class DutyScheduleActivity extends AppCompatActivity {
             // Tạo thông báo khi tạo lịch thành công
             String title = "Lịch trực mới đã được tạo";
             String content = "Ngày: " + selectedDate +
-                    "\nCa: " + selectedShift +
+                    "\nCa: " + selectedStartShift + " - " + selectedEndShift +
                     "\nLoại trực: " + selectedDutyType +
                     "\nPhòng: " + roomName;
 

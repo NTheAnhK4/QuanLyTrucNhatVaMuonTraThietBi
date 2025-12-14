@@ -66,13 +66,7 @@ public class HistoryRequestActivityx extends AppCompatActivity {
         if (allRequests != null) {
             // Lọc: Chỉ lấy các yêu cầu ĐÃ XỬ LÝ và KHÔNG PHẢI là Rejected (chỉ Approved)
             List<BorrowRequest> historyRequests = allRequests.stream()
-
-                    // ⭐️ SỬA ĐỔI ĐIỀU KIỆN LỌC Ở ĐÂY ⭐️
                     .filter(request -> request.getStatus() == BorrowRequestStatus.Rejected)
-
-                    // Hoặc bạn có thể dùng cách loại trừ (nhưng cách trên rõ ràng hơn cho mục đích "Chỉ hiển thị Approved")
-                    // .filter(request -> request.getStatus() != BorrowRequestStatus.Pending && request.getStatus() != BorrowRequestStatus.Rejected)
-
                     .collect(Collectors.toList());
 
             this.requestList = historyRequests;
@@ -100,14 +94,6 @@ public class HistoryRequestActivityx extends AppCompatActivity {
             emptyStateView.setVisibility(View.GONE);
         }
     }
-
-//    @Override
-//    public void onBackPressed() {
-//        super.onBackPressed();
-//        finish();
-//    }
-
-    // --- INNER CLASS: HistoryRequestAdapter ---
 
     private class HistoryRequestAdapter extends RecyclerView.Adapter<HistoryRequestAdapter.HistoryRequestViewHolder> {
 
@@ -142,10 +128,7 @@ public class HistoryRequestActivityx extends AppCompatActivity {
 
             BorrowRequestStatus status = request.getStatus();
             String displayStatus = getVietnameseStatus(status);
-
-            // ⭐️ BƯỚC THAY ĐỔI: Thay đổi màu nền dựa trên trạng thái ⭐️
             if (status == BorrowRequestStatus.Rejected) {
-
                 holder.tvStatus.setBackgroundResource(R.drawable.bg_status_red);
             }
             // Hiển thị thông tin
@@ -156,7 +139,7 @@ public class HistoryRequestActivityx extends AppCompatActivity {
 
             holder.btnApprove.setOnClickListener(v -> {
                 // 1. Cập nhật trạng thái trong dữ liệu gốc
-                request.setStatus(BorrowRequestStatus.Approved);
+                request.setStatus(BorrowRequestStatus.Pending);
                 DataUtil.getInstance(context).borrowRequests.update(request);
 
                 // 2. Xóa yêu cầu khỏi danh sách hiển thị

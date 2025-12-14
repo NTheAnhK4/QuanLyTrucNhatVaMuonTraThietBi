@@ -55,18 +55,17 @@ public class DataUtil {
 // Trong file DataUtil.java
 
     private void fakeBorrowRequestData(){
-        // DỮ LIỆU CHỜ DUYỆT (Dùng cho BorrowRequestActivity)
+        // DỮ LIỆU CHỜ DUYỆT
         borrowRequests.add(new BorrowRequest("1", "2022603255", "EQ001", "20/09/2025", 13, 16, BorrowRequestStatus.Pending));
         borrowRequests.add(new BorrowRequest("2", "2022603256", "EQ002", "21/09/2025", 9, 12, BorrowRequestStatus.Pending));
         borrowRequests.add(new BorrowRequest("3", "2022603257", "EQ003", "22/09/2025", 10, 14, BorrowRequestStatus.Pending));
 
-        // ⭐️ DỮ LIỆU LỊCH SỬ (Dùng cho HistoryRequestActivity) ⭐️
 
-        // ĐÃ DUYỆT (Approved)
+        // ĐÃ DUYỆT
         borrowRequests.add(new BorrowRequest("4", "2022603258", "EQ004", "22/09/2025", 10, 14, BorrowRequestStatus.Approved));
         borrowRequests.add(new BorrowRequest("5", "2022603259", "EQ005", "23/09/2025", 8, 11, BorrowRequestStatus.Approved));
 
-        // ĐÃ TỪ CHỐI (Rejected)
+        // ĐÃ TỪ CHỐI
         borrowRequests.add(new BorrowRequest("6", "2022603254", "EQ006", "24/09/2025", 14, 17, BorrowRequestStatus.Rejected));
         borrowRequests.add(new BorrowRequest("7", "2022603252", "EQ007", "25/09/2025", 13, 16, BorrowRequestStatus.Rejected));
         borrowRequests.add(new BorrowRequest("8", "2022603251", "EQ008", "26/09/2025", 9, 12, BorrowRequestStatus.Rejected));

@@ -11,6 +11,7 @@ public class BorrowRequest implements Serializable, Identifiable{
     private int startBorrowDay;
     private int endBorrowDay;
     private BorrowRequestStatus status;
+    private long latestUpdateTime;
 
     public BorrowRequest(String id, String idUser, String idEquipment, String borrowDay, int startBorrowDay, int endBorrowDay, BorrowRequestStatus status) {
         this.id = id;
@@ -38,6 +39,14 @@ public class BorrowRequest implements Serializable, Identifiable{
         this.startBorrowDay = startBorrowDay;
         this.endBorrowDay = endBorrowDay;
         this.status = BorrowRequestStatus.Pending;
+    }
+
+    public long getLatestUpdateTime() {
+        return latestUpdateTime;
+    }
+
+    public void setLatestUpdateTime(long latestUpdateTime) {
+        this.latestUpdateTime = latestUpdateTime;
     }
 
     public String getIdUser() {

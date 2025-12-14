@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,12 +68,7 @@ public class HistoryRequestActivityv extends AppCompatActivity {
             // Lọc: Chỉ lấy các yêu cầu ĐÃ XỬ LÝ và KHÔNG PHẢI là Rejected (chỉ Approved)
             List<BorrowRequest> historyRequests = allRequests.stream()
 
-                    // ⭐️ SỬA ĐỔI ĐIỀU KIỆN LỌC Ở ĐÂY ⭐️
                     .filter(request -> request.getStatus() == BorrowRequestStatus.Approved)
-
-                    // Hoặc bạn có thể dùng cách loại trừ (nhưng cách trên rõ ràng hơn cho mục đích "Chỉ hiển thị Approved")
-                    // .filter(request -> request.getStatus() != BorrowRequestStatus.Pending && request.getStatus() != BorrowRequestStatus.Rejected)
-
                     .collect(Collectors.toList());
 
             this.requestList = historyRequests;
@@ -102,14 +98,6 @@ public class HistoryRequestActivityv extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    public void onBackPressed() {
-//        super.onBackPressed();
-//        finish();
-//    }
-
-    // --- INNER CLASS: HistoryRequestAdapter ---
-
     private class HistoryRequestAdapter extends RecyclerView.Adapter<HistoryRequestAdapter.HistoryRequestViewHolder> {
 
         private List<BorrowRequest> requests;
@@ -137,26 +125,35 @@ public class HistoryRequestActivityv extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull HistoryRequestViewHolder holder, int position) {
             BorrowRequest request = requests.get(position);
-
-            // Đánh số thứ tự
-            int requestNumber = position + 1;
-
             BorrowRequestStatus status = request.getStatus();
             String displayStatus = getVietnameseStatus(status);
-
-
             if (status == BorrowRequestStatus.Approved) {
                 holder.tvStatus.setBackgroundResource(R.drawable.bg_status_approved);
-
             }
-            // Hiển thị thông tin
             holder.tvRequestId.setText("Yêu cầu mượn thiết bị: " + request.getIdEquipment());
             holder.tvUserInfo.setText("Mã SV: " + request.getIdUser() );
             holder.tvDetails.setText("Ngày: " + request.getBorrowDay() + " | Từ: " + request.getStartBorrowDay() + "H - Đến: " + request.getEndBorrowDay() + "H");
             holder.tvStatus.setText(displayStatus);
-            if (holder.btnAction != null) {
-                holder.btnAction.setVisibility(View.GONE);
-            }
+            holder.btnApprove.setOnClickListener(v -> {
+                // 1. Cập nhật trạng thái trong dữ liệu gốc
+                request.setStatus(BorrowRequestStatus.Pending);
+                DataUtil.getInstance(context).borrowRequests.update(request);
+
+                // 2. Xóa yêu cầu khỏi danh sách hiển thị
+                requests.remove(position);
+
+                // 3. Thông báo cho Adapter biết dữ liệu đã thay đổi
+                notifyItemRemoved(position);
+
+                // 4. HIỂN THỊ THÔNG BÁO DUYỆT THÀNH CÔNG 🎉
+                Toast.makeText(context, "Đã duyệt lại yêu cầu " + request.getId() + " thành công!",
+                        Toast.LENGTH_SHORT).show();
+
+                // Cần đảm bảo list trong activity được cập nhật sau khi xóa
+                if (requests.isEmpty()) {
+                    ((BorrowRequestActivity) context).loadPendingRequests();
+                }
+            });
         }
 
         private String getVietnameseStatus(BorrowRequestStatus status) {
@@ -175,14 +172,15 @@ public class HistoryRequestActivityv extends AppCompatActivity {
 
         class HistoryRequestViewHolder extends RecyclerView.ViewHolder {
             TextView tvRequestId, tvUserInfo, tvDetails, tvStatus;
-            Button btnAction;
+            Button btnApprove;
             public HistoryRequestViewHolder(@NonNull View itemView) {
                 super(itemView);
                 tvRequestId = itemView.findViewById(R.id.his_request_id);
                 tvUserInfo = itemView.findViewById(R.id.his_user_info);
                 tvDetails = itemView.findViewById(R.id.his_details);
                 tvStatus = itemView.findViewById(R.id.his_status);
-                btnAction = itemView.findViewById(R.id.btn_approve_his);
+                btnApprove = itemView.findViewById(R.id.btn_approve_his);
+
             }
         }
     }

@@ -11,6 +11,7 @@ import androidx.core.view.WindowInsetsCompat;
 import android.widget.Button;
 import android.content.Intent;
 import com.example.quanlytrucnhatvamuontrathietbi.DutyScheduleView.DutyScheduleActivity;
+import com.example.quanlytrucnhatvamuontrathietbi.DutyScheduleView.DutyScheduleListActivity;
 
 public class home_admin extends AppCompatActivity {
 
@@ -44,7 +45,7 @@ public class home_admin extends AppCompatActivity {
 
         // Mở màn hình tạo lịch trực nhật
         btnTao.setOnClickListener(v ->
-                startActivity(new Intent(this, DutyScheduleActivity.class))
+                startActivity(new Intent(this, DutyScheduleListActivity.class))
         );
 
         // Mở màn hình quản lý thiết bị

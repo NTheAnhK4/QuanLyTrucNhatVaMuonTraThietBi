@@ -11,18 +11,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.QuanLyTrucNhatVaMuonTraThietBi">
+
+        <!-- Home Admin: launcher -->
         <activity
-            android:name=".DeviceManagerActivity"
-            android:exported="true" />
-        <!-- Đặt LoginActivity làm màn hình khởi động -->
-        <activity
-            android:name="Ui.thongbao.ThongBaoActivity"
+            android:name=".home_admin"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".DeviceManagerActivity"
+            android:exported="false" />
 
         <activity
             android:name=".DutyScheduleView.DutyScheduleActivity"
@@ -34,30 +36,39 @@
             android:exported="false"
             android:label="Chi tiết lịch" />
 
-
         <activity
             android:name=".MainActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
+
         <activity
             android:name=".RegisterActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
+
         <activity
             android:name=".TAExampleDataUlti"
-            android:exported="true" />
+            android:exported="false" />
+
         <activity
             android:name=".BorrowRequestActivity"
-            android:exported="true">
-        </activity>
+            android:exported="false" />
+
         <activity
             android:name=".HistoryRequestActivityv"
-            android:exported="true">
+            android:exported="false" />
 
-        </activity>
         <activity
             android:name=".HistoryRequestActivityx"
-            android:exported="true">
+            android:exported="false" />
 
-        </activity>
+        <!-- 2 màn hình mới -->
+        <activity
+            android:name=".AccountActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>

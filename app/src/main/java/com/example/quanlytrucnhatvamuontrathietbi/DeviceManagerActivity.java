@@ -81,7 +81,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
 
     private void setupBackButton() {
         btnBack.setOnClickListener(v -> {
-            Intent intent = new Intent(DeviceManagerActivity.this, MainActivity.class);
+            Intent intent = new Intent(DeviceManagerActivity.this, home_admin.class);
             startActivity(intent);
             finish(); // đóng DeviceManagerActivity
         });

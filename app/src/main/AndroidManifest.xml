@@ -49,9 +49,7 @@
             android:name=".RegisterActivity"
             android:exported="false" />
 
-        <activity
-            android:name=".home_admin"
-            android:exported="true"></activity>
+
         <activity
             android:name=".TAExampleDataUlti"
             android:exported="false" />

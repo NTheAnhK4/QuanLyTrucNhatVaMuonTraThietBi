@@ -2,15 +2,23 @@ package com.example.quanlytrucnhatvamuontrathietbi.DutyScheduleView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.quanlytrucnhatvamuontrathietbi.AccountActivity;
 import com.example.quanlytrucnhatvamuontrathietbi.R;
+import com.example.quanlytrucnhatvamuontrathietbi.SettingsActivity;
+import com.example.quanlytrucnhatvamuontrathietbi.home_admin;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationBarView;
 
 import Data.DataUtil;
 import Data.DutySchedule;
@@ -38,6 +46,33 @@ public class DutyScheduleListActivity extends AppCompatActivity {
         setupToolbar();
         setupRecyclerView();
         setupListeners();
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int itemId = item.getItemId();
+
+                if (itemId == R.id.nav_settings) {
+                    // Xử lý khi nhấn vào Cài đặt
+                    startActivity(new Intent(DutyScheduleListActivity.this, SettingsActivity.class));
+                    return true;
+                } else if (itemId == R.id.nav_account) {
+                    // Xử lý khi nhấn vào Tài khoản
+                    startActivity(new Intent(DutyScheduleListActivity.this, AccountActivity.class));
+                    return true;
+                } else if (itemId == R.id.nav_home) {
+                    Intent intent = new Intent(DutyScheduleListActivity.this, home_admin.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    startActivity(intent);
+                    finish();
+                    return true;
+                }
+                return false;
+            }
+        });
+
     }
 
     @Override
@@ -56,6 +91,17 @@ public class DutyScheduleListActivity extends AppCompatActivity {
     private void setupToolbar() {
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            // Đảm bảo navigation icon được hiển thị (Mặc dù đã set trong XML, đây là bước kiểm tra tốt)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+
+        // Đặt listener cho navigation icon (nút Back)
+        toolbar.setNavigationOnClickListener(v -> {
+            // Khi người dùng nhấn nút Back trên Toolbar, kết thúc Activity hiện tại
+            onBackPressed();
+        });
     }
 
     private void setupRecyclerView() {

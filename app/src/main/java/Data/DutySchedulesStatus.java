@@ -1,5 +1,5 @@
 package Data;
 
 public enum DutySchedulesStatus {
-    Pending, Completed,
+    Pending, Completed, Cancelled
 }

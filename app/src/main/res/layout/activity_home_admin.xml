@@ -1,62 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/coordinator_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F0F2F5"
     tools:context=".home_admin">
 
-    <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent" android:layout_height="match_parent"
-        android:background="#F2F2F2">
-        <ScrollView
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="16dp"
-            android:layout_above="@+id/bottomNav">
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:title="Trang chủ Quản trị"
+            app:titleTextColor="@android:color/white"
+            app:titleCentered="true" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <!--  Greeting  -->
-                <TextView
-                    android:id="@+id/tvGreeting"
-                    android:layout_width="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="24dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Hi, Nguyễn Thế Anh"
-                    android:textSize="16sp"
-                    android:textColor="#000000"
-                    android:layout_marginBottom="16dp"
-                    android:src="@drawable/ic_notifications"/>
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Chào mừng trở lại!"
+                        android:textSize="14sp"
+                        android:textColor="#666666"/>
+                    <TextView
+                        android:id="@+id/tvGreeting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nguyễn Thế Anh"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:textColor="#000000"/>
+                </LinearLayout>
+
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_notifications"/>
-                <!--  CARD 1  -->
+                    android:id="@+id/iv_notifications"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_notifications"
+                    app:tint="?attr/colorPrimary"
+                    android:contentDescription="Thông báo" />
+            </LinearLayout>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_duty_schedule"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                android:clickable="true"
+                android:focusable="true">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/spinner_bg"
-                    android:padding="16dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="16dp">
                     <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical">
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:src="@drawable/outline"/>
-
+                            android:src="@drawable/ic_calendar_today"
+                            app:tint="?attr/colorPrimary"/>
                         <TextView
-                            android:layout_marginLeft="10dp"
+                            android:layout_marginStart="10dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Quản lý trực nhật"
-                            android:textColor="#005BBB"
+                            android:textColor="#333333"
                             android:textSize="18sp"
                             android:textStyle="bold"/>
                     </LinearLayout>
@@ -64,42 +109,52 @@
                         android:text="Tạo lịch trực nhật cho sinh viên"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="#666666" android:layout_marginTop="4dp"/>
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:textColor="#666666"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="12dp"/>
+                    <TableRow android:layout_width="match_parent" android:layout_height="wrap_content">
                         <Button
                             android:id="@+id/btnTao"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Tạo"
-                            android:backgroundTint="#005BBB"
-                            android:textColor="#FFFFFF"/>
+                            android:text="Tạo Lịch"
+                            app:cornerRadius="8dp"
+                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                            android:textColor="?attr/colorPrimary"/>
                     </TableRow>
                 </LinearLayout>
-                <!--  CARD 2  -->
+            </com.google.android.material.card.MaterialCardView>
 
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_device_manager"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                android:clickable="true"
+                android:focusable="true">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/spinner_bg"
-                    android:padding="16dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="16dp">
                     <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical">
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:src="@drawable/outline"/>
-
+                            android:src="@drawable/ic_devices"
+                            app:tint="?attr/colorPrimary"/>
                         <TextView
-                            android:layout_marginLeft="10dp"
+                            android:layout_marginStart="10dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Quản lí thiết bị"
-                            android:textColor="#005BBB"
+                            android:textColor="#333333"
                             android:textSize="18sp"
                             android:textStyle="bold"/>
                     </LinearLayout>
@@ -107,41 +162,52 @@
                         android:text="Thêm, sửa, xóa thiết bị"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="#666666" android:layout_marginTop="4dp"/>
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:textColor="#666666"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="12dp"/>
+                    <TableRow android:layout_width="match_parent" android:layout_height="wrap_content">
                         <Button
                             android:id="@+id/btnQuanLy"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Quản lý"
-                            android:backgroundTint="#005BBB"
-                            android:textColor="#FFFFFF"/>
+                            app:cornerRadius="8dp"
+                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                            android:textColor="?attr/colorPrimary"/>
                     </TableRow>
                 </LinearLayout>
-                <!--  CARD 3  -->
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_borrow_request"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                android:clickable="true"
+                android:focusable="true">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/spinner_bg"
-                    android:padding="16dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="16dp">
                     <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical">
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:src="@drawable/outline"/>
-
+                            android:src="@drawable/ic_check_circle"
+                            app:tint="?attr/colorPrimary"/>
                         <TextView
-                            android:layout_marginLeft="10dp"
+                            android:layout_marginStart="10dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Duyệt yêu cầu mượn"
-                            android:textColor="#005BBB"
+                            android:textColor="#333333"
                             android:textSize="18sp"
                             android:textStyle="bold"/>
                     </LinearLayout>
@@ -149,86 +215,32 @@
                         android:text="Nhận và duyệt (hoặc từ chối) yêu cầu"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="#666666" android:layout_marginTop="4dp"/>
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:textColor="#666666"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="12dp"/>
+                    <TableRow android:layout_width="match_parent" android:layout_height="wrap_content">
                         <Button
                             android:id="@+id/btnDuyet"
                             android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
                             android:text="Duyệt"
-
-                            android:backgroundTint="#005BBB"
-                            android:textColor="#FFFFFF"/>
+                            app:cornerRadius="8dp"
+                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                            android:textColor="?attr/colorPrimary"/>
                     </TableRow>
                 </LinearLayout>
-            </LinearLayout>
-        </ScrollView>
-        <!--  BOTTOM NAV  -->
-        <LinearLayout
-            android:id="@+id/bottomNav"
-            android:layout_alignParentBottom="true"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:orientation="horizontal"
-
-            android:gravity="center">
-
-            <LinearLayout
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:gravity="center">
-                <ImageView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:src="@drawable/ic_home"/>
-                <TextView
-                    android:id="@+id/textView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Trang chủ"
-                    android:gravity="center"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:gravity="center">
-                <ImageView
-                    android:id="@+id/btnSettings"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:src="@drawable/ic_settings"/>
-                <TextView
-                    android:id="@+id/textView2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Cài đặt"
-                    android:gravity="center"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:gravity="center">
-                <ImageView
-                    android:id="@+id/btnAccount"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:src="@drawable/ic_person"/>
-                <TextView
-                    android:id="@+id/textView3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Tài khoản"
-                    android:gravity="center"/>
-            </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
-    </RelativeLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@android:color/white"
+        app:elevation="8dp"
+        app:menu="@menu/bottom_nav_menu"
+        app:labelVisibilityMode="labeled" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

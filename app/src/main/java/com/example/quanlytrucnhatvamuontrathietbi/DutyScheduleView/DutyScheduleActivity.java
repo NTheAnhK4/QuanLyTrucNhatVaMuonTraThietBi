@@ -18,7 +18,7 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputLayout;
 import androidx.appcompat.app.AlertDialog;
-import android.widget.Space; // BỔ SUNG NẾU SỬ DỤNG Space TRONG XML
+import android.widget.Space;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -32,11 +32,9 @@ import java.util.Map;
 
 import Data.DataUtil;
 import Data.DutySchedule;
-import Data.DutySchedulesStatus;
+import Data.DutySchedulesStatus; // ĐÃ BAO GỒM Cancelled
 import Data.User;
 import Data.Notification;
-
-
 
 
 public class DutyScheduleActivity extends AppCompatActivity {
@@ -44,7 +42,6 @@ public class DutyScheduleActivity extends AppCompatActivity {
     private DataUtil dataUtil;
 
     private AutoCompleteTextView edtDutyType;
-    // CẬP NHẬT: Thay thế edtShift bằng hai trường mới
     private AutoCompleteTextView edtStartShift, edtEndShift;
     private TextInputEditText edtRoom, edtDate;
 
@@ -53,15 +50,11 @@ public class DutyScheduleActivity extends AppCompatActivity {
     private MaterialToolbar toolbar;
 
     private ChipGroup chipGroupParticipants;
-    // Map này lưu trữ Key là "MSV - TÊN" và Value là User ID
     private Map<String, String> lookupMap;
-
-    // List này lưu trữ các User ID được chọn
     private List<String> importedParticipantIds = new ArrayList<>();
 
     private final String[] DUTY_TYPES = new String[]{"Phòng lý thuyết", "Phòng thực hành", "Lao động công ích"};
 
-    // KHỞI TẠO MẢNG CHỨA CÁC CA (Ca 1 -> Ca 17)
     private final String[] SHIFTS;
 
     public DutyScheduleActivity() {
@@ -104,7 +97,6 @@ public class DutyScheduleActivity extends AppCompatActivity {
         edtDutyType = findViewById(R.id.edt_duty_type);
         edtRoom = findViewById(R.id.edt_room);
 
-        // TÌM KIẾM CÁC ID MỚI
         edtStartShift = findViewById(R.id.edt_start_shift);
         edtEndShift = findViewById(R.id.edt_end_shift);
 
@@ -121,7 +113,6 @@ public class DutyScheduleActivity extends AppCompatActivity {
         ArrayAdapter<String> dutyTypeAdapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, DUTY_TYPES);
         edtDutyType.setAdapter(dutyTypeAdapter);
 
-        // ADAPTER CHUNG CHO CẢ HAI TRƯỜNG CA
         ArrayAdapter<String> shiftAdapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, SHIFTS);
         edtStartShift.setAdapter(shiftAdapter);
         edtEndShift.setAdapter(shiftAdapter);
@@ -185,24 +176,70 @@ public class DutyScheduleActivity extends AppCompatActivity {
         }
     }
 
-    // HÀM KIỂM TRA THỨ TỰ CA (Ca bắt đầu <= Ca kết thúc)
     private boolean isShiftSequenceValid(String startShiftStr, String endShiftStr) {
         try {
-            // Lấy số từ chuỗi "Ca X"
-            // Ví dụ: "Ca 10" -> "10"
             int startShiftNum = Integer.parseInt(startShiftStr.replaceAll("[^0-9]", ""));
             int endShiftNum = Integer.parseInt(endShiftStr.replaceAll("[^0-9]", ""));
-
-            // Ca kết thúc phải lớn hơn hoặc bằng Ca bắt đầu
             return endShiftNum >= startShiftNum;
-
         } catch (NumberFormatException e) {
-            // Nếu parse lỗi (chuỗi không đúng định dạng "Ca X"), coi như không hợp lệ
             return false;
         }
     }
 
-    // HÀM TẠO BẢN ĐỒ TRA CỨU: CHỈ LẤY SINH VIÊN (MSV - NAME)
+    private int parseShift(String shiftStr) {
+        try {
+            return Integer.parseInt(shiftStr.replaceAll("[^0-9]", ""));
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
+
+    // HÀM KIỂM TRA XUNG ĐỘT LỊCH TRỰC
+    private boolean checkScheduleConflict(String roomName, String dateStr, String startShiftStr, String endShiftStr, List<String> participantIds) {
+
+        int newStartShift = parseShift(startShiftStr);
+        int newEndShift = parseShift(endShiftStr);
+
+        if (newStartShift == -1 || newEndShift == -1) {
+            return true;
+        }
+
+        for (DutySchedule existingSchedule : dataUtil.dutySchedules.getAll()) {
+
+            if (existingSchedule.getStatus() == DutySchedulesStatus.Completed || existingSchedule.getStatus() == DutySchedulesStatus.Cancelled) {
+                continue;
+            }
+
+            boolean sameRoomAndDate = existingSchedule.getClassName().equalsIgnoreCase(roomName) &&
+                    existingSchedule.getDay().equals(dateStr);
+
+            if (sameRoomAndDate) {
+                int existingStartShift = parseShift(existingSchedule.getStartShift());
+                int existingEndShift = parseShift(existingSchedule.getEndShift());
+
+                boolean shiftOverlap = newStartShift <= existingEndShift && newEndShift >= existingStartShift;
+
+                if (shiftOverlap) {
+
+                    for (String newParticipantId : participantIds) {
+                        if (existingSchedule.getAssigneeIds().contains(newParticipantId)) {
+                            Toast.makeText(this, "Sinh viên đã chọn bị trùng lịch trực tại: " + existingSchedule.getClassName() + ", Ngày: " + existingSchedule.getDay() + ", Ca: " + existingSchedule.getStartShift() + "-" + existingSchedule.getEndShift(), Toast.LENGTH_LONG).show();
+                            return true;
+                        }
+                    }
+
+                    // Kiểm tra xung đột Lịch (Nếu hai lịch tạo trùng nhau hoàn toàn về Phòng/Ngày/Ca)
+                    if (newStartShift == existingStartShift && newEndShift == existingEndShift) {
+                        Toast.makeText(this, "Lịch trực này đã tồn tại tại: " + existingSchedule.getClassName() + ", Ngày: " + existingSchedule.getDay() + ", Ca: " + existingSchedule.getStartShift() + "-" + existingSchedule.getEndShift(), Toast.LENGTH_LONG).show();
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
     private Map<String, String> createLookupMap() {
         Map<String, String> map = new HashMap<>();
 
@@ -219,7 +256,6 @@ public class DutyScheduleActivity extends AppCompatActivity {
         return map;
     }
 
-    // HÀM MỞ DIALOG CHỌN
     private void showParticipantSelectionDialog() {
         final List<String> displayKeys = new ArrayList<>(lookupMap.keySet());
         Collections.sort(displayKeys);
@@ -288,19 +324,18 @@ public class DutyScheduleActivity extends AppCompatActivity {
         }
     }
 
-    // HÀM TẠO LỊCH (ĐÃ SỬA LỖI LOGIC GROUP)
+
     private void validateAndSaveSchedule() {
         String roomName = edtRoom.getText().toString().trim();
         String selectedDate = edtDate.getText().toString().trim();
         String selectedDutyType = edtDutyType.getText().toString().trim();
 
-        // THU THẬP CA BẮT ĐẦU VÀ KẾT THÚC
         String selectedStartShift = edtStartShift.getText().toString().trim();
         String selectedEndShift = edtEndShift.getText().toString().trim();
 
         String currentCreatorId = "ID_ADMIN_001";
 
-        // 1. Xử lý nhập thủ công
+        // Xử lý nhập
         String inputManual = edtParticipantId.getText().toString().trim();
         if (!inputManual.isEmpty()) {
             String inputUpper = inputManual.toUpperCase();
@@ -326,7 +361,7 @@ public class DutyScheduleActivity extends AppCompatActivity {
             edtParticipantId.setText("");
         }
 
-        // 2. Kiểm tra dữ liệu
+        // Kiểm tra dữ liệu
         if (importedParticipantIds.isEmpty()) {
             Toast.makeText(this, "Vui lòng chọn ít nhất 1 sinh viên.", Toast.LENGTH_LONG).show();
             return;
@@ -337,7 +372,6 @@ public class DutyScheduleActivity extends AppCompatActivity {
             return;
         }
 
-        // KIỂM TRA TÍNH HỢP LỆ CỦA NGÀY
         if (!isDateValid(selectedDate)) {
             Toast.makeText(this, "Ngày trực không hợp lệ. Vui lòng chọn lại.", Toast.LENGTH_LONG).show();
             return;
@@ -348,19 +382,22 @@ public class DutyScheduleActivity extends AppCompatActivity {
             return;
         }
 
-        // KIỂM TRA THỨ TỰ CA
         if (!isShiftSequenceValid(selectedStartShift, selectedEndShift)) {
             Toast.makeText(this, "Ca Kết thúc phải lớn hơn hoặc bằng Ca Bắt đầu.", Toast.LENGTH_LONG).show();
             return;
         }
 
+        // KIỂM TRA XUNG ĐỘT
+        if (checkScheduleConflict(roomName, selectedDate, selectedStartShift, selectedEndShift, importedParticipantIds)) {
+            return;
+        }
 
-        // 3. Lưu lịch
+        // Lưu lịch
         try {
             DutySchedule newSchedule = new DutySchedule(
                     selectedDate,
-                    selectedStartShift, // THÊM MỚI
-                    selectedEndShift,   // THÊM MỚI
+                    selectedStartShift,
+                    selectedEndShift,
                     selectedDutyType,
                     roomName,
                     currentCreatorId,
@@ -369,14 +406,14 @@ public class DutyScheduleActivity extends AppCompatActivity {
             );
 
             dataUtil.dutySchedules.add(newSchedule);
-            // Tạo thông báo khi tạo lịch thành công
+
+            // Tạo thông báo
             String title = "Lịch trực mới đã được tạo";
             String content = "Ngày: " + selectedDate +
                     "\nCa: " + selectedStartShift + " - " + selectedEndShift +
                     "\nLoại trực: " + selectedDutyType +
                     "\nPhòng: " + roomName;
 
-            // id để null, Repository sẽ tự sinh UUID
             Notification noti = new Notification(null, title, content);
             dataUtil.notifications.add(noti);
 

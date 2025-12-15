@@ -4,14 +4,14 @@ package com.example.quanlytrucnhatvamuontrathietbi;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.content.Intent;
-import com.example.quanlytrucnhatvamuontrathietbi.DutyScheduleView.DutyScheduleActivity;
 import com.example.quanlytrucnhatvamuontrathietbi.DutyScheduleView.DutyScheduleListActivity;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 public class home_admin extends AppCompatActivity {
 
@@ -20,17 +20,28 @@ public class home_admin extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home_admin);
-        findViewById(R.id.btnAccount).setOnClickListener(v ->
-                startActivity(new Intent(this, AccountActivity.class)));
 
-        findViewById(R.id.btnSettings).setOnClickListener(v ->
-                startActivity(new Intent(this, SettingsActivity.class)));
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNav);
 
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int itemId = item.getItemId();
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+                if (itemId == R.id.nav_settings) {
+                    // Xử lý khi nhấn vào Cài đặt
+                    startActivity(new Intent(home_admin.this, SettingsActivity.class));
+                    return true;
+                } else if (itemId == R.id.nav_account) {
+                    // Xử lý khi nhấn vào Tài khoản
+                    startActivity(new Intent(home_admin.this, AccountActivity.class));
+                    return true;
+                } else if (itemId == R.id.nav_home) {
+                    // Màn hình hiện tại là Trang chủ, có thể refresh hoặc không làm gì
+                    return true;
+                }
+                return false;
+            }
         });
         // -------------------------
         // KHAI BÁO 3 NÚT

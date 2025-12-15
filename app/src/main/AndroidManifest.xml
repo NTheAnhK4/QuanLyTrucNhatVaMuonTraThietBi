@@ -74,6 +74,10 @@
         <activity
             android:name=".SettingsActivity"
             android:exported="false" />
+        <activity
+            android:name="Ui.thongbao.ThongBaoActivity"
+            android:exported="false" />
+
 
     </application>
 

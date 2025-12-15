@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.quanlytrucnhatvamuontrathietbi.R;
+import com.example.quanlytrucnhatvamuontrathietbi.home_admin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,13 +38,13 @@ public class ThongBaoActivity extends AppCompatActivity {
         toolbarThongBao = findViewById(R.id.toolbarThongBao);
         setSupportActionBar(toolbarThongBao);
 
-//        // ⭐ BẮT SỰ KIỆN ẤN MŨI TÊN TRÊN TOOLBAR
-//        toolbarThongBao.setNavigationOnClickListener(v -> {
-//            // TODO: Đổi HomeActivity thành màn hình home thực tế của bạn
-//            Intent intent = new Intent(ThongBaoActivity.this, HomeActivity.class);
-//            startActivity(intent);
-//            finish(); // đóng màn hình thông báo
-//        });
+        // ⭐ BẮT SỰ KIỆN ẤN MŨI TÊN TRÊN TOOLBAR
+       toolbarThongBao.setNavigationOnClickListener(v -> {
+            // TODO: Đổi HomeActivity thành màn hình home thực tế của bạn
+            Intent intent = new Intent(ThongBaoActivity.this, home_admin.class);
+            startActivity(intent);
+            finish(); // đóng màn hình thông báo
+        });
 
         recyclerView = findViewById(R.id.rcvThongBao);
         dsThongBao = new ArrayList<>();

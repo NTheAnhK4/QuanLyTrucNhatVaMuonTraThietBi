@@ -17,7 +17,6 @@
         android:paddingBottom="12dp"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:background="@android:color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -45,13 +44,14 @@
             android:textColor="#000"
             android:layout_marginStart="16dp" />
 
-        <ImageView
-            android:id="@+id/iconEye"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+        <ImageButton
+            android:id="@+id/btnOverflowMenu"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:src="@drawable/ic_eye_outline"
+            android:background="?attr/selectableItemBackgroundBorderless"
             app:tint="#1F2937"
-            android:contentDescription="Icon theo dõi"
+            android:contentDescription="Tùy chọn menu"
             android:layout_marginStart="16dp"/>
 
     </LinearLayout>

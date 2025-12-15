@@ -9,12 +9,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.content.Intent;
+import android.widget.ImageView;
+
 import com.example.quanlytrucnhatvamuontrathietbi.DutyScheduleView.DutyScheduleListActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
+import Ui.thongbao.ThongBaoActivity;
+
 public class home_admin extends AppCompatActivity {
 
+    private ImageView btnNotification;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,7 +27,7 @@ public class home_admin extends AppCompatActivity {
         setContentView(R.layout.activity_home_admin);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNav);
-
+        btnNotification = findViewById(R.id.iv_notifications);
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -68,5 +73,10 @@ public class home_admin extends AppCompatActivity {
         btnDuyet.setOnClickListener(v ->
                 startActivity(new Intent(this, BorrowRequestActivity.class))
         );
+        btnNotification.setOnClickListener(v -> {
+            Intent intent = new Intent(home_admin.this, ThongBaoActivity.class);
+            startActivity(intent);
+            finish();
+        });
     }
 }

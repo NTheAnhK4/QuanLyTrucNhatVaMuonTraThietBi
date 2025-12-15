@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,6 @@ public class HistoryRequestActivityv extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Đảm bảo R.layout.history_request là tên file XML chính của bạn
         setContentView(R.layout.history_request);
 
         // 1. Khởi tạo Views
@@ -40,11 +40,12 @@ public class HistoryRequestActivityv extends AppCompatActivity {
         emptyStateView = findViewById(R.id.empty_state_view_history);
         Button btnBack = findViewById(R.id.btnBackHistory);
 
-        // 2. Thiết lập nút Back (dùng finish() để quay lại BorrowRequestActivity)
+        // 2. Thiết lập nút Back
         btnBack.setOnClickListener(v -> finish());
 
         // 3. Khởi tạo RecyclerView và Adapter
         recyclerRequests.setLayoutManager(new LinearLayoutManager(this));
+        // Khởi tạo list trống
         requestList = new ArrayList<>();
         adapter = new HistoryRequestAdapter(requestList, this);
         recyclerRequests.setAdapter(adapter);
@@ -56,6 +57,7 @@ public class HistoryRequestActivityv extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        // Cần tải lại để cập nhật trạng thái nếu có thay đổi từ Activity khác
         loadHistoryRequests();
     }
 
@@ -64,19 +66,15 @@ public class HistoryRequestActivityv extends AppCompatActivity {
         List<BorrowRequest> allRequests = dataUtil.borrowRequests.getAll();
 
         if (allRequests != null) {
-            // Lọc: Chỉ lấy các yêu cầu ĐÃ XỬ LÝ và KHÔNG PHẢI là Rejected (chỉ Approved)
+            // Lọc: Chỉ lấy các yêu cầu ĐÃ DUYỆT (Approved) để hiển thị trong History (theo logic hiện tại của bạn)
             List<BorrowRequest> historyRequests = allRequests.stream()
-
-                    // ⭐️ SỬA ĐỔI ĐIỀU KIỆN LỌC Ở ĐÂY ⭐️
                     .filter(request -> request.getStatus() == BorrowRequestStatus.Approved)
-
-                    // Hoặc bạn có thể dùng cách loại trừ (nhưng cách trên rõ ràng hơn cho mục đích "Chỉ hiển thị Approved")
-                    // .filter(request -> request.getStatus() != BorrowRequestStatus.Pending && request.getStatus() != BorrowRequestStatus.Rejected)
-
                     .collect(Collectors.toList());
 
+            // Cập nhật list gốc của Activity
             this.requestList = historyRequests;
             if (adapter != null) {
+                // Cập nhật dữ liệu cho Adapter
                 adapter.updateData(this.requestList);
             }
 
@@ -89,7 +87,6 @@ public class HistoryRequestActivityv extends AppCompatActivity {
 
         // Kiểm tra Empty State sau khi dữ liệu được tải
         checkIfEmpty();
-
     }
 
     private void checkIfEmpty() {
@@ -102,16 +99,9 @@ public class HistoryRequestActivityv extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    public void onBackPressed() {
-//        super.onBackPressed();
-//        finish();
-//    }
-
-    // --- INNER CLASS: HistoryRequestAdapter ---
-
     private class HistoryRequestAdapter extends RecyclerView.Adapter<HistoryRequestAdapter.HistoryRequestViewHolder> {
 
+        // List này sẽ là tham chiếu đến requestList của Activity
         private List<BorrowRequest> requests;
         private final Context context;
 
@@ -137,32 +127,58 @@ public class HistoryRequestActivityv extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull HistoryRequestViewHolder holder, int position) {
             BorrowRequest request = requests.get(position);
-
-            // Đánh số thứ tự
-            int requestNumber = position + 1;
-
             BorrowRequestStatus status = request.getStatus();
             String displayStatus = getVietnameseStatus(status);
 
-
             if (status == BorrowRequestStatus.Approved) {
                 holder.tvStatus.setBackgroundResource(R.drawable.bg_status_approved);
-
             }
-            // Hiển thị thông tin
+
             holder.tvRequestId.setText("Yêu cầu mượn thiết bị: " + request.getIdEquipment());
             holder.tvUserInfo.setText("Mã SV: " + request.getIdUser() );
             holder.tvDetails.setText("Ngày: " + request.getBorrowDay() + " | Từ: " + request.getStartBorrowDay() + "H - Đến: " + request.getEndBorrowDay() + "H");
             holder.tvStatus.setText(displayStatus);
-            if (holder.btnAction != null) {
-                holder.btnAction.setVisibility(View.GONE);
-            }
+
+
+            holder.btnApprove.setOnClickListener(v -> {
+                // Lấy vị trí hiện tại của mục trong Adapter một cách an toàn
+                int currentPosition = holder.getAdapterPosition();
+                // Kiểm tra tính hợp lệ của vị trí
+                if (currentPosition == RecyclerView.NO_POSITION) {
+                    return; // Thoát nếu vị trí không hợp lệ
+                }
+
+                // Lấy đối tượng yêu cầu tại vị trí hiện tại
+                BorrowRequest requestToApprove = requests.get(currentPosition);
+
+                // 1. Cập nhật trạng thái trong dữ liệu gốc: Chuyển sang Pending (Duyệt lại/Gửi lại)
+                requestToApprove.setStatus(BorrowRequestStatus.Pending);
+                DataUtil.getInstance(context).borrowRequests.update(requestToApprove);
+
+                // 2. Xóa yêu cầu khỏi danh sách hiển thị (vì nó đã được chuyển trạng thái khỏi History)
+                requests.remove(currentPosition);
+
+                // 3. Thông báo cho Adapter biết dữ liệu đã thay đổi
+                notifyItemRemoved(currentPosition);
+
+                // 4. HIỂN THỊ THÔNG BÁO THÀNH CÔNG
+                Toast.makeText(context, "Đã gửi lại yêu cầu " + requestToApprove.getIdEquipment() + "duyệt lại thành công!",
+                        Toast.LENGTH_SHORT).show();
+
+                // 5. KIỂM TRA TRẠNG THÁI RỖNG và cập nhật UI của Activity
+                if (context instanceof HistoryRequestActivityv) {
+                    // Gọi hàm checkIfEmpty() của Activity hiện tại
+                    ((HistoryRequestActivityv) context).checkIfEmpty();
+                }
+            });
         }
 
         private String getVietnameseStatus(BorrowRequestStatus status) {
             switch (status) {
                 case Approved:
                     return "Đã Duyệt";
+                case Pending:
+                    return "Đang chờ"; // Thêm nếu cần hiển thị trạng thái Pending
                 default:
                     return status.toString();
             }
@@ -175,14 +191,15 @@ public class HistoryRequestActivityv extends AppCompatActivity {
 
         class HistoryRequestViewHolder extends RecyclerView.ViewHolder {
             TextView tvRequestId, tvUserInfo, tvDetails, tvStatus;
-            Button btnAction;
+            Button btnApprove;
             public HistoryRequestViewHolder(@NonNull View itemView) {
                 super(itemView);
                 tvRequestId = itemView.findViewById(R.id.his_request_id);
                 tvUserInfo = itemView.findViewById(R.id.his_user_info);
                 tvDetails = itemView.findViewById(R.id.his_details);
                 tvStatus = itemView.findViewById(R.id.his_status);
-                btnAction = itemView.findViewById(R.id.btn_approve_his);
+                btnApprove = itemView.findViewById(R.id.btn_approve_his);
+
             }
         }
     }

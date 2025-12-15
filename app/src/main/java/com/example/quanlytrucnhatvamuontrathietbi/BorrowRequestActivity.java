@@ -7,8 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,10 +24,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import Data.Notification;
 import Data.BorrowRequest;
 import Data.BorrowRequestStatus;
 import Data.DataUtil;
 import Data.Equipment;
+
 
 public class BorrowRequestActivity extends AppCompatActivity {
 
@@ -33,6 +37,7 @@ public class BorrowRequestActivity extends AppCompatActivity {
     private List<BorrowRequest> requestList;
     private BorrowRequestAdapter adapter;
     private LinearLayout emptyStateView;
+    private ImageButton btnOverflowMenu;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,25 +53,55 @@ public class BorrowRequestActivity extends AppCompatActivity {
         adapter = new BorrowRequestAdapter(requestList, this);
         recyclerRequests.setAdapter(adapter);
 
-        // 2. Thiết lập nút Back
+
         Button btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(v -> finish());
+//
+        btnOverflowMenu = findViewById(R.id.btnOverflowMenu);
 
-        // 3. Thiết lập Icon Con Mắt (Sử dụng ID đã thêm vào XML Header)
-        ImageView iconEye = findViewById(R.id.iconEye);
-        if (iconEye != null) {
-            iconEye.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showFilterDialog();
-                }
-            });
-        }
+
+        btnOverflowMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopupMenu(v);
+            }
+        });
 
         // 4. Tải dữ liệu ban đầu
         loadPendingRequests();
     }
 
+
+    private void showPopupMenu(View view) {
+        PopupMenu popup = new PopupMenu(this, view);
+
+        popup.getMenuInflater().inflate(R.menu.header_menu_request, popup.getMenu());
+
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(android.view.MenuItem menuItem) {
+                return handleMenuItemClick(menuItem);
+            }
+        });
+
+
+        popup.show();
+    }
+    private boolean handleMenuItemClick(android.view.MenuItem item) {
+        int id = item.getItemId();
+
+
+        if (id == R.id.duyet) {
+            Intent intent = new Intent(BorrowRequestActivity.this, HistoryRequestActivityv.class);
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.tuchoi) {
+            Intent intent = new Intent(BorrowRequestActivity.this, HistoryRequestActivityx.class);
+            startActivity(intent);
+            return true;
+        }
+        return false;
+    }
     @Override
     protected void onResume() {
         super.onResume();
@@ -102,45 +137,6 @@ public class BorrowRequestActivity extends AppCompatActivity {
             emptyStateView.setVisibility(View.GONE);
         }
     }
-    private void showFilterDialog() {
-        // Tạo Builder cho AlertDialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        // Lấy layout dialog_request_filter.xml
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_request_filter, null);
-        builder.setView(dialogView);
-
-        // ⭐️ Khắc phục lỗi lặp: Chỉ tạo một đối tượng dialog
-        final AlertDialog dialog = builder.create();
-        dialog.show();
-
-        // Tìm các button trong dialog view (Đã có sẵn)
-        Button btnComplete = dialogView.findViewById(R.id.btnComplete);
-        Button btnFailure = dialogView.findViewById(R.id.btnFailure);
-        ImageView btnClose = dialogView.findViewById(R.id.btnCloseDialog);
-
-
-        // Xử lý nút Đóng
-        btnClose.setOnClickListener(v -> dialog.dismiss());
-
-        // Xử lý nút Đã duyệt (Chuyển sang màn hình Lịch sử - Đã có sẵn)
-        btnComplete.setOnClickListener(v -> {
-            dialog.dismiss();
-            Intent intent = new Intent(BorrowRequestActivity.this, HistoryRequestActivityv.class);
-            startActivity(intent);
-        });
-
-        // Xử lý nút Thất bại (Chuyển sang màn hình Lịch sử khác - Đã có sẵn)
-        btnFailure.setOnClickListener(v -> {
-            dialog.dismiss();
-            Intent intent = new Intent(BorrowRequestActivity.this, HistoryRequestActivityx.class);
-            startActivity(intent);
-        });
-
-    }
-
-    // --- INNER CLASS: BorrowRequestAdapter (Đã sửa lỗi currentRequestNumber và btn_approve) ---
 
     private class BorrowRequestAdapter extends RecyclerView.Adapter<BorrowRequestAdapter.RequestViewHolder> {
 
@@ -164,7 +160,7 @@ public class BorrowRequestActivity extends AppCompatActivity {
                     .inflate(R.layout.item_request, parent, false);
             return new RequestViewHolder(view);
         }
-// Trong BorrowRequestActivity.java
+        // Trong BorrowRequestActivity.java
 // ...
         @Override
         public void onBindViewHolder(@NonNull RequestViewHolder holder, int position) {
@@ -185,46 +181,86 @@ public class BorrowRequestActivity extends AppCompatActivity {
             holder.tvDetails.setText("Ngày: " + request.getBorrowDay() + " | Từ: " + request.getStartBorrowDay() + "H - Đến: " + request.getEndBorrowDay() + "H");
             holder.tvStatus.setText(displayStatus);
 
-            // ⭐️ LOGIC XỬ LÝ NÚT DUYỆT ⭐️
             holder.btnApprove.setOnClickListener(v -> {
+                int currentPosition = holder.getAdapterPosition();
+
+                // Kiểm tra tính hợp lệ của vị trí trước khi thao tác
+                if (currentPosition == RecyclerView.NO_POSITION) {
+                    return; // Thoát nếu vị trí không hợp lệ
+                }
+
+                BorrowRequest currentRequest = requests.get(currentPosition);
+
                 // 1. Cập nhật trạng thái trong dữ liệu gốc
-                request.setStatus(BorrowRequestStatus.Approved);
-                DataUtil.getInstance(context).borrowRequests.update(request);
+                currentRequest.setStatus(BorrowRequestStatus.Approved);
+                DataUtil dataUtil = DataUtil.getInstance(context);
+                dataUtil.borrowRequests.update(currentRequest);
+
+                // 1.1. TẠO THÔNG BÁO VÀ LƯU VÀO DATAUTIL.NOTIFICATIONS
+                String title = "Yêu cầu mượn đã được DUYỆT";
+                String content = "Yêu cầu mượn thiết bị " + currentRequest.getIdEquipment()
+                        + " ngày " + currentRequest.getBorrowDay()
+                        + " từ " + currentRequest.getStartBorrowDay() + "h đến "
+                        + currentRequest.getEndBorrowDay() + "h đã được duyệt.";
+
+                Notification notification = new Notification(title, content);
+                notification.setApproved(true);
+
+                dataUtil.notifications.add(notification); // Thêm dòng này
 
                 // 2. Xóa yêu cầu khỏi danh sách hiển thị
-                requests.remove(position);
+                requests.remove(currentPosition);
 
                 // 3. Thông báo cho Adapter biết dữ liệu đã thay đổi
-                notifyItemRemoved(position);
+                notifyItemRemoved(currentPosition);
 
                 // 4. HIỂN THỊ THÔNG BÁO DUYỆT THÀNH CÔNG 🎉
-                Toast.makeText(context, "Đã duyệt yêu cầu " + request.getId() + " thành công!",
+                Toast.makeText(context, "Đã duyệt yêu cầu " + currentRequest.getIdEquipment() + " thành công!",
                         Toast.LENGTH_SHORT).show();
 
-                // Cần đảm bảo list trong activity được cập nhật sau khi xóa
+                // 5. Cập nhật Empty State (Giữ nguyên logic này)
                 if (requests.isEmpty()) {
                     ((BorrowRequestActivity) context).loadPendingRequests();
                 }
             });
 
-            // Bạn có thể làm tương tự cho nút Từ chối (btnReject)
             holder.btnReject.setOnClickListener(v -> {
+                int currentPosition = holder.getAdapterPosition();
+
+                // Kiểm tra tính hợp lệ của vị trí trước khi thao tác
+                if (currentPosition == RecyclerView.NO_POSITION) {
+                    return; // Thoát nếu vị trí không hợp lệ
+                }
+
+                BorrowRequest currentRequest = requests.get(currentPosition);
+
                 // 1. Cập nhật trạng thái trong dữ liệu gốc
-                request.setStatus(BorrowRequestStatus.Rejected);
-                DataUtil.getInstance(context).borrowRequests.update(request);
+                currentRequest.setStatus(BorrowRequestStatus.Rejected);
+                DataUtil dataUtil = DataUtil.getInstance(context);
+                dataUtil.borrowRequests.update(currentRequest);
+
+                // 1.1. TẠO THÔNG BÁO TỪ CHỐI
+                String title = "Yêu cầu mượn đã bị TỪ CHỐI";
+                String content = "Yêu cầu mượn thiết bị " + currentRequest.getIdEquipment()
+                        + " ngày " + currentRequest.getBorrowDay()
+                        + " từ " + currentRequest.getStartBorrowDay() + "h đến "
+                        + currentRequest.getEndBorrowDay() + "h đã bị từ chối.";
+
+                Notification notification = new Notification(title, content);
+                notification.setApproved(false);
+                dataUtil.notifications.add(notification);
 
                 // 2. Xóa yêu cầu khỏi danh sách hiển thị
-                requests.remove(position);
+                requests.remove(currentPosition);
 
                 // 3. Thông báo cho Adapter biết dữ liệu đã thay đổi và cập nhật giao diện
-                // ⚠️ PHẢI GỌI notifyItemRemoved để xóa item khỏi RecyclerView
-                notifyItemRemoved(position);
+                notifyItemRemoved(currentPosition);
 
-                // 4. HIỂN THỊ THÔNG BÁO TỪ CHỐI THÀNH CÔNG ❌
-                Toast.makeText(context, "Đã từ chối yêu cầu " + request.getId() + " thành công.",
+                // 4. HIỂN THỊ THÔNG BÁO TỪ CHỐI THÀNH CÔNG
+                Toast.makeText(context, "Đã từ chối yêu cầu " + currentRequest.getIdEquipment() ,
                         Toast.LENGTH_SHORT).show();
 
-                // Kiểm tra và cập nhật Empty State nếu cần (giống logic của nút Duyệt)
+                // 5. Kiểm tra và cập nhật Empty State (Giữ nguyên logic này)
                 if (requests.isEmpty()) {
                     ((BorrowRequestActivity) context).loadPendingRequests();
                 }
@@ -247,7 +283,6 @@ public class BorrowRequestActivity extends AppCompatActivity {
                 tvUserInfo = itemView.findViewById(R.id.tv_user_info);
                 tvDetails = itemView.findViewById(R.id.tv_details);
                 tvStatus = itemView.findViewById(R.id.tv_status);
-                // ⭐️ KHỞI TẠO BUTTONS ⭐️
                 btnApprove = itemView.findViewById(R.id.btn_approve);
                 btnReject = itemView.findViewById(R.id.btn_reject);
             }
